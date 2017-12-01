@@ -2,8 +2,8 @@
  * nyt json format
  * @module puzzle/format/json
  */
-import $ from 'jquery'
 import Puzzle from '..'
+import fetchProxy from 'SRC/util/fetch'
 
 /**
  * Puzzle JSON format
@@ -77,4 +77,4 @@ function save(puzzle) {
   return data
 }
 
-export default {load, save, fetch: $.getJSON}
+export default {load, save, fetch: fetchProxy}
