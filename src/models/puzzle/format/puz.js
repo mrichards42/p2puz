@@ -98,15 +98,7 @@ function loadSection(name, puzzle, dv) {
 }
 
 function fetch(url) {
-  return fetchProxy(url).then(data => {
-    // Convert string to arraybuffer
-    const buf = new ArrayBuffer(data.length)
-    const dv = new Uint8Array(buf)
-    for (let i = 0, strLen = data.length; i < strLen; ++i) {
-      dv[i] = data.charCodeAt(i)
-    }
-    return buf
-  })
+  return fetchProxy(url).then(r => r.arrayBuffer())
 }
 
 export default {load, fetch}

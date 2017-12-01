@@ -51,6 +51,7 @@ function main() {
 }
 
 loadPolyfills([
+  'fetch' in window || 'fetch',
   'Promise' in window || 'Promise',
   'assign' in Object || 'Object.assign',
   'keys' in Object || 'Object.keys',

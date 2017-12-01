@@ -77,4 +77,8 @@ function save(puzzle) {
   return data
 }
 
-export default {load, save, fetch: fetchProxy}
+function fetch(url) {
+  return fetchProxy(url).then(r => r.json())
+}
+
+export default {load, save, fetch}
