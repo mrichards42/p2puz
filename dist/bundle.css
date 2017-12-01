@@ -1,0 +1,268 @@
+.puzzle-grid table {
+  position: absolute; }
+
+/* Grid */
+.puzzle-grid, .puzzle-grid * {
+  box-sizing: border-box; }
+
+.puzzle-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Check toggle */
+  /* Reveal toggle */ }
+  .puzzle-grid table {
+    border-collapse: collapse;
+    border: 2px solid black; }
+  .puzzle-grid td {
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    background: white; }
+    .puzzle-grid td.blacksquare {
+      background: black; }
+    .puzzle-grid td.remote-word-highlight {
+      background: lightgray; }
+    .puzzle-grid td.remote-cursor-highlight {
+      background: gray; }
+    .puzzle-grid td.word-highlight {
+      background: powderblue; }
+    .puzzle-grid td.cursor-highlight {
+      background: gold; }
+  .puzzle-grid .square {
+    font-family: sans-serif;
+    font-size: 1.25em;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    background: inherit;
+    /* decorations */ }
+    .puzzle-grid .square .text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin-top: .3em;
+      text-align: center;
+      vertical-align: middle;
+      overflow: hidden;
+      z-index: 3; }
+    .puzzle-grid .square .remote {
+      opacity: 0.5; }
+    .puzzle-grid .square .number {
+      font-size: .5em;
+      position: absolute;
+      left: 0.1em;
+      top: 0;
+      z-index: 2;
+      background-color: inherit; }
+    .puzzle-grid .square .decoration {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0; }
+      .puzzle-grid .square .decoration.decoration-circle {
+        border-radius: 50%;
+        border: 1px solid gray;
+        margin: -1px; }
+  .puzzle-grid.check .correct .text {
+    color: green; }
+  .puzzle-grid.check .incorrect .text {
+    color: red; }
+  .puzzle-grid .square .solution {
+    display: none; }
+  .puzzle-grid .square .user {
+    display: table-cell; }
+  .puzzle-grid.reveal .square .solution {
+    display: table-cell; }
+  .puzzle-grid.reveal .square .user {
+    display: none; }
+.clue-prompt {
+  font-size: 1.25em;
+  padding: 0.25em 1em;
+  background: powderblue;
+  overflow: auto;
+  height: 100%;
+  display: flex; }
+  .clue-prompt > * {
+    margin-top: auto;
+    margin-bottom: auto; }
+
+.clue-number {
+  font-weight: bold;
+  text-align: right;
+  min-width: 2em;
+  margin-right: 0.5em; }
+.clue-header {
+  padding: .5em;
+  margin: 0;
+  border-bottom: 1px solid gray;
+  font-weight: bold;
+  text-transform: uppercase; }
+
+.clue-list {
+  margin: 0;
+  padding: 0;
+  overflow: auto; }
+  .clue-list li {
+    list-style: none;
+    cursor: pointer;
+    padding: .15em .25em;
+    margin: 1px;
+    margin-left: 7px; }
+  .clue-list .clue-number {
+    font-weight: bold;
+    margin-right: .5em;
+    width: 1em;
+    display: table-cell;
+    float: left;
+    text-align: right; }
+  .clue-list .clue-text {
+    display: table-cell; }
+  .clues-3digit .clue-list .clue-number {
+    width: 1.5em; }
+
+.clue-list-wrapper.highlight-primary li.highlight {
+  margin: 0;
+  background: powderblue;
+  border: 1px solid powderblue;
+  border-left: 7px solid powderblue; }
+
+.clue-list-wrapper.highlight-secondary li.highlight {
+  margin: 0;
+  border: 1px solid powderblue;
+  border-left: 7px solid powderblue; }
+
+.clues-vertical.clue-list-wrapper, .clues-horizontal.clue-list-wrapper {
+  display: flex;
+  flex-flow: column; }
+
+.clue-list-wrapper.clues-tiny {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  line-height: 1.2;
+  height: 3em; }
+  .clue-list-wrapper.clues-tiny .clue-header {
+    flex: 1;
+    min-width: 5em;
+    border-bottom: none; }
+  .clue-list-wrapper.clues-tiny .clue-list {
+    flex: 5;
+    max-height: 100%; }
+  .clue-list-wrapper.clues-tiny li {
+    display: none; }
+    .clue-list-wrapper.clues-tiny li.highlight {
+      display: list-item; }
+  .clue-list-wrapper.clues-tiny.highlight-primary {
+    background: powderblue; }
+  .clue-list-wrapper.clues-tiny li, .clue-list-wrapper.clues-tiny li.highlight {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0; }
+.metadata {
+  overflow: auto;
+  padding: 0.25em; }
+.puzzle, .puzzle * {
+  box-sizing: border-box; }
+
+.puzzle {
+  font-family: sans-serif;
+  font-size: 0.9em;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 100%; }
+  .puzzle .puzzle-wrapper {
+    display: flex;
+    flex: 1;
+    min-height: 0; }
+  .puzzle .grid-and-prompt {
+    display: flex;
+    flex-flow: column;
+    flex: 100; }
+  .puzzle .metadata-above-prompt {
+    order: -1; }
+  .puzzle .prompt {
+    order: 0; }
+  .puzzle .metadata-below-prompt {
+    order: 1; }
+  .puzzle .metadata-above-grid {
+    order: 2; }
+  .puzzle .grid {
+    order: 3; }
+  .puzzle .metadata-below-grid {
+    order: 4; }
+  .puzzle .metadata {
+    flex: none; }
+  .puzzle .prompt {
+    height: 4em; }
+  .puzzle .grid {
+    flex: 1; }
+  .puzzle .clues-container {
+    flex: 1;
+    display: flex;
+    flex-flow: row; }
+  .puzzle .clue-list-wrapper {
+    flex: 1; }
+
+.puzzle.orientation-portrait .puzzle-wrapper {
+  flex-flow: column; }
+
+.puzzle.orientation-landscape .puzzle-wrapper {
+  flex-flow: row; }
+
+.puzzle.grid-constrained .grid-and-prompt {
+  flex: none; }
+
+.puzzle.prompt-off .prompt {
+  display: none; }
+
+.puzzle.clues-vertical .clues-container {
+  flex-flow: column;
+  min-width: 15em;
+  min-height: 10em; }
+
+.puzzle.clues-horizontal .clues-container {
+  flex-flow: row;
+  min-width: 30em;
+  min-height: 5em; }
+
+.puzzle.clues-tiny .clues-container {
+  display: block;
+  flex: 0; }
+
+.puzzle.clues-vertical .clues-container, .puzzle.clues-horizontal .clues-container {
+  display: flex; }
+
+.puzzle.clues-vertical .clue-list-wrapper, .puzzle.clues-horizontal .clue-list-wrapper {
+  flex: 1;
+  min-width: 15em;
+  min-height: 5em; }
+
+.meta-title {
+  font-size: 1.25em;
+  padding-bottom: 0; }
+
+.meta-byline {
+  padding-top: 0;
+  display: flex;
+  flex-flow: row wrap; }
+  .meta-byline .meta-author {
+    font-size: 0.8em;
+    flex: auto; }
+  .meta-byline .meta-copyright {
+    font-size: 0.8em;
+    flex: none; }
+html, body, #puzzle {
+  height: 100%;
+  margin: 0;
+  padding: 0; }
