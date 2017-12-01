@@ -1,0 +1,25 @@
+{
+  "extends": "standard",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    // What I don't like in standardjs
+    "space-before-function-paren": ["error", "never"],
+    "comma-dangle": ["error", "always-multiline"],
+    "no-multi-spaces": "warn",
+    "key-spacing": ["error", {
+      "singleLine": {"mode": "strict"},
+      "multiLine": {"mode": "minimum"}  // Allow multiple spaces for alignment
+    }],
+    // Additions not covered in standardjs
+    "no-var": "error",
+    "prefer-const": "error",
+    "max-len": ["error", {
+      "code": 80,
+      "ignoreUrls": true
+    }],
+    "prefer-arrow-callback": "error",
+    "arrow-parens": ["error", "as-needed"]
+  }
+}

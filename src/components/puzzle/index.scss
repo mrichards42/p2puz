@@ -1,0 +1,140 @@
+// Basic styles
+.puzzle, .puzzle * {
+  box-sizing: border-box;
+}
+
+.puzzle {
+  font-family: sans-serif;
+  font-size: 0.9em;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 100%;
+
+  .puzzle-wrapper {
+    display: flex;
+    flex: 1;
+    min-height: 0; // To allow shrink
+  }
+
+  .grid-and-prompt {
+    display: flex;
+    flex-flow: column;
+    // Give all the flex to grid-and-prompt.  The actual flex will be
+    // constrained in js by setting max-width or max-height
+    flex: 100;
+  }
+
+  // grid-and-prompt order
+  .metadata-above-prompt { order: -1 }
+  .prompt { order: 0; }
+  .metadata-below-prompt { order: 1; }
+  .metadata-above-grid { order: 2; }
+  .grid { order: 3 }
+  .metadata-below-grid { order: 4; }
+
+  .metadata {
+    flex: none;
+  }
+  .prompt {
+    height: 4em;
+  }
+  .grid {
+    flex: 1;
+  }
+
+
+  .clues-container {
+    // Once max-width or max-height are hit, grid-and-prompt will no longer
+    // expand, and clues-container will take up any extra space
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+  }
+  .clue-list-wrapper {
+    flex: 1;
+  }
+}
+
+// Layouts
+.puzzle.orientation-portrait .puzzle-wrapper {
+  flex-flow: column;
+}
+
+.puzzle.orientation-landscape .puzzle-wrapper {
+  flex-flow: row;
+}
+
+.puzzle.grid-constrained .grid-and-prompt {
+  flex: none;
+}
+
+// Prompt
+.puzzle.prompt-off {
+  .prompt {
+    display: none;
+  }
+}
+
+// Clues
+$clue-min-width: 15em;
+$clue-min-height: 5em;
+
+.puzzle.clues-vertical {
+  @extend %clues-flex;
+  .clues-container {
+    flex-flow: column;
+    min-width: $clue-min-width;
+    min-height: 2 * $clue-min-height;
+  }
+}
+
+.puzzle.clues-horizontal {
+  @extend %clues-flex;
+  .clues-container {
+    flex-flow: row;
+    min-width: 2 * $clue-min-width;
+    min-height: $clue-min-height;
+  }
+}
+
+.puzzle.clues-tiny {
+  .clues-container {
+    display: block;
+    flex: 0;
+    // See clues.scss for the rest of this style
+  }
+}
+
+%clues-flex {
+  .clues-container {
+    display: flex;
+  }
+
+  .clue-list-wrapper {
+    flex: 1;
+    min-width: $clue-min-width;
+    min-height: $clue-min-height;
+  }
+}
+
+// Metadata styles
+.meta-title {
+  font-size: 1.25em;
+  padding-bottom: 0;
+}
+
+.meta-byline {
+  padding-top: 0;
+  display: flex;
+  flex-flow: row wrap;
+
+  .meta-author {
+    font-size: 0.8em;
+    flex: auto;
+  }
+  .meta-copyright {
+    font-size: 0.8em;
+    flex: none;
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "p2puz",
+  "version": "1.0.0-alpha",
+  "description": "Multiplayer HTML5 Crosswords",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "bundle": "webpack --config webpack.dev.js --devtool source-map",
+    "server": "webpack-dev-server --open --config webpack.dev.js",
+    "doc": "jsdoc -c jsdoc.conf"
+  },
+  "author": "Mike Richards",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.11.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-webpack-plugin": "^2.30.1",
+    "html-webpack-template": "^6.1.0",
+    "node-sass": "^4.6.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.0.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4",
+    "webpack-merge": "^4.1.1"
+  },
+  "dependencies": {
+    "base64-arraybuffer": "^0.1.5",
+    "grapnel": "^0.6.4"
+  }
+}

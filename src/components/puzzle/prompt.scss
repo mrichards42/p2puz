@@ -1,0 +1,23 @@
+@import 'colors';
+
+.clue-prompt {
+  font-size: 1.25em;
+  padding: 0.25em 1em;
+  background: $clue-prompt-color;
+  overflow: auto;
+
+  // Center vertically
+  height: 100%;
+  display: flex;
+  & > * {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+.clue-number {
+  font-weight: bold;
+  text-align: right;
+  min-width: 2em;
+  margin-right: 0.5em;
+}

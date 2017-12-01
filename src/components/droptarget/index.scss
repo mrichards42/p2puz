@@ -1,0 +1,27 @@
+.drop {
+  .drop-target {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 2em;
+    padding: 10em;
+    border: 1px dashed blue;
+
+    &:hover {
+      background-color: lightblue;
+    }
+
+  }
+
+  .drop-overlay {
+    z-index: 99;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
