@@ -10,3 +10,7 @@ $clue-secondary-color: $primary-color;
 
 $remote-cursor-color: gray;
 $remote-word-color: lightgray;
+
+$toolbar-border-color: #aaa;
+$toolbar-shadow-color: lighten($toolbar-border-color, 10%);
+$toolbar-highlight-color: $primary-color;

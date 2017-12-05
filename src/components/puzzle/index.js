@@ -7,6 +7,7 @@ import Grid from './grid'
 import Prompt from './prompt'
 import ClueList from './clues'
 import Metadata from './metadata'
+import Toolbar from './toolbar'
 import './index.scss'
 
 const TEMPLATE = `
@@ -37,6 +38,14 @@ export class PuzzleView extends Base.View {
     this.handleResize = _.throttle(this.handleResize.bind(this), 10)
     $(window).resize(this.handleResize)
     $(this.handleResize) // Defer initial resize until after first layout
+  }
+
+  /**
+   * Adds the toolbar sub-view
+   * @param {View} view
+   */
+  addToolbar(view) {
+    this.$el.prepend(view.$el)
   }
 
   /**
@@ -230,8 +239,10 @@ class PuzzlePresenter extends Base.Presenter {
     this.puzzle = null
     this.prompt = new Prompt()
     this.grid = new Grid()
+    this.toolbar = new Toolbar()
     this.clues = {}
     this.meta = []
+    this.view.addToolbar(this.toolbar)
     this.view.addPrompt(this.prompt.view)
     this.view.addGrid(this.grid.view)
     // Set initial config
@@ -246,6 +257,7 @@ class PuzzlePresenter extends Base.Presenter {
   setPuzzle(puzzle) {
     this.puzzle = puzzle
     this.prompt.setPuzzle(puzzle)
+    this.toolbar.setPuzzle(puzzle)
     this._setupClues()
     this.meta.forEach(m => m.setPuzzle(puzzle))
     // Setup grid last so we can trigger a resize after other elements have
@@ -297,6 +309,7 @@ class PuzzlePresenter extends Base.Presenter {
       clues: this.setClueLayout,
       orientation: this.setLayoutOrientation,
       metadata: this.setMetadata,
+      toolbar: this.configureToolbar,
     }
     // Execute the specified function for each option
     for (const k in opts) {
@@ -352,6 +365,18 @@ class PuzzlePresenter extends Base.Presenter {
    */
   setLayoutOrientation(orientation) {
     this.view.setLayoutOrientation(orientation)
+  }
+
+  /**
+   * Sets the toolbar config
+   * @param {object[]} tools - array of tool definitions
+   * @param {string} tools[].label - menu label
+   * @param {string} [tools[].html] - item html override (default: label)
+   * @param {object} [tools[].events] - event mapping
+   * @param {array} [tools[].items] - sub items
+   */
+  configureToolbar(tools) {
+    this.toolbar.setTools(tools)
   }
 
   /**

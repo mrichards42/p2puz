@@ -1,0 +1,49 @@
+@import 'colors';
+
+.puzzle-toolbar {
+  display: flex;
+  z-index: 10;
+  min-height: 2em;
+  border-bottom: 1px solid $toolbar-border-color;
+  box-shadow: 0 2px 2px 0px $toolbar-shadow-color;
+}
+
+.toolbar-tool {
+  padding: 0.5em;
+  flex: none;
+  cursor: pointer;
+  // Vertically center text
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: $toolbar-highlight-color;
+  }
+}
+
+// Menus
+.toolbar-menu {
+  position: relative;
+}
+
+.toolbar-submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  background: white;
+  box-shadow: 0 0 5px 2px $toolbar-shadow-color;
+
+  // Last two items
+  .toolbar-menu:nth-last-child(-n+2) & {
+    right: 0;
+    left: unset;
+  }
+
+  // Toggle
+  display: none;
+  .toolbar-menu:hover &, .toolbar-menu-show & {
+    display: block;
+  }
+}
