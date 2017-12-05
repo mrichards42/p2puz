@@ -396,8 +396,7 @@ class PuzzlePresenter extends Base.Presenter {
    */
   addMetadata(opts) {
     // Build metadata presenter
-    const meta = new Metadata({format: opts.format})
-    if (opts.class) meta.$el.addClass(opts.class)
+    const meta = new Metadata({format: opts.format, class: opts.class})
     meta.setPuzzle(this.puzzle)
     // Add to root view
     this.view.addMetadata(

@@ -1,7 +1,7 @@
 import Base from 'SRC/components/base'
 import './metadata.scss'
 
-const META_TEMPLATE = `<div class="metadata"></div>`
+const META_TEMPLATE = `<div></div>`
 
 export class MetadataView extends Base.View {
   constructor({template = META_TEMPLATE, ...opts} = {}) {
@@ -15,10 +15,16 @@ export class MetadataView extends Base.View {
 }
 
 export default class MetadataPresenter extends Base.Presenter {
-  constructor({view = new MetadataView(), format, ...opts} = {}) {
+  constructor({
+    view = new MetadataView(),
+    format,
+    class: cssClass = 'metadata',
+    ...opts} = {}
+  ) {
     super({view, ...opts})
     this.puzzle = null
     this.format = format
+    if (cssClass) this.$el.addClass(cssClass)
   }
 
   setFormat(format) {
