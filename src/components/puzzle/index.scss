@@ -119,22 +119,20 @@ $clue-min-height: 5em;
 }
 
 // Metadata styles
-.meta-title {
-  font-size: 1.25em;
-  padding-bottom: 0;
-}
 
-.meta-byline {
-  padding-top: 0;
+.toolbar-puzzle-title {
+  flex: auto;
+  padding: 0.25em;
   display: flex;
   flex-flow: row wrap;
 
-  .meta-author {
-    font-size: 0.8em;
-    flex: auto;
+  .meta-title {
+    font-size: 1.25em;
+    width: 100%;
   }
-  .meta-copyright {
+
+  .meta-author, .meta-copyright {
     font-size: 0.8em;
-    flex: none;
+    margin-right: 1em;
   }
 }

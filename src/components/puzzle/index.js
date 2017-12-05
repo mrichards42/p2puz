@@ -191,7 +191,9 @@ export class PuzzleView extends Base.View {
 
 // Presenter config
 
-const BYLINE_FORMAT = ({author, editor, copyright}) => {
+const TITLE_FORMAT = ({title, date, author, editor, copyright}) => {
+  // Normalize title
+  if (!title && date) title = strftime(date, '<b>DDDD</b>, MMMM D, YYYY')
   // Normalize author and editor
   if (!editor) [, author, editor] = author.match(/(.*)\/(.*)/) || ['', author]
   if (author) author = 'By ' + author.replace(/^\s*by\s+/i, '')
@@ -203,14 +205,10 @@ const BYLINE_FORMAT = ({author, editor, copyright}) => {
   }
   // Template
   return `
+    <span class="meta-title">${title || ''}</span>
     <span class="meta-author">${author || ''}</span>
     <span class="meta-copyright">${copyright || ''}</span>
   `
-}
-
-const TITLE_FORMAT = ({title, date}) => {
-  if (title) return title
-  if (date) return strftime(date, '<b>DDDD</b>, MMMM D, YYYY')
 }
 
 const DEFAULT_CONFIG = {
@@ -218,9 +216,8 @@ const DEFAULT_CONFIG = {
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
-  metadata: [
-    {below: 'grid', class: 'meta-title', format: TITLE_FORMAT},
-    {below: 'grid', class: 'meta-byline', format: BYLINE_FORMAT},
+  toolbar: [
+    {html: TITLE_FORMAT, class: 'toolbar-puzzle-title'},
   ],
 }
 
