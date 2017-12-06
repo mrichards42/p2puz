@@ -150,6 +150,7 @@ export default class GridPresenter extends Base.Presenter {
 
   setPuzzle(puzzle) {
     this.puzzle = puzzle
+    this._remoteState = null
     // Create the rest of the view
     this.view.createGrid(puzzle.rows, puzzle.cols)
     for (const square of puzzle.squares) {
@@ -361,19 +362,27 @@ export default class GridPresenter extends Base.Presenter {
       this.view.renderWordHighlight(wordSquares, 'remote-word-highlight')
     }
     // Letters
+    let letterCallback
     if (settings['remote.letter.overwrite']) {
       // Update the grid and re-render changed squares
-      for (let i = 0; i < state.grid.length; ++i) {
-        if (this.puzzle.state.grid[i] !== state.grid[i]) {
-          this.puzzle.state.grid[i] = state.grid[i]
-          this.view.renderSquare(this.puzzle.squares[i])
-        }
+      letterCallback = (letter, i) => {
+        this.puzzle.state.grid[i] = letter
+        this.view.renderSquare(this.puzzle.squares[i])
       }
     } else {
       // Re-render the remote grid
-      for (let i = 0; i < state.grid.length; ++i) {
-        this.view.renderRemoteLetter(i, state.grid[i])
+      letterCallback = (letter, i) => {
+        this.view.renderRemoteLetter(i, letter)
       }
     }
+    // Compute grid diffs and run the callback
+    if (!this._remoteState) {
+      state.grid.forEach(letterCallback)
+    } else {
+      state.grid.forEach((letter, i) => {
+        if (this._remoteState.grid[i] !== letter) letterCallback(letter, i)
+      })
+    }
+    this._remoteState = state
   }
 }
