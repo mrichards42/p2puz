@@ -106,12 +106,12 @@
   }
 
   /* Check toggle */
-  &.check {
+  &.check td:not(.blacksquare) {
     .correct .text {
       color: green;
     }
 
-    .incorrect .text {
+    :not(.correct) .user.text {
       color: red;
     }
   }
