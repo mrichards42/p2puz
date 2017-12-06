@@ -425,8 +425,7 @@ class PuzzlePresenter extends Base.Presenter {
 
   // Remote
   setRemoteState(state) {
-    console.log('remote state', state)
-    this.grid.setRemoteState(state)
+    if (this.puzzle) this.grid.setRemoteState(state)
   }
 
   // Additional UI

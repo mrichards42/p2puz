@@ -22,7 +22,7 @@ const outputs = {
       template: require('html-webpack-template'),
       // template options
       lang: 'en',
-      scripts: DEPENDENCIES.src('lodash', 'jquery', 'mousetrap'),
+      scripts: DEPENDENCIES.src('lodash', 'jquery', 'mousetrap', 'localforage', 'pubnub', 'simple-peer'),
       appMountId: 'puzzle',
     }),
   ],

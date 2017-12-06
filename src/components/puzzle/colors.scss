@@ -8,8 +8,8 @@ $clue-prompt-color: $primary-color;
 $clue-primary-color: $primary-color;
 $clue-secondary-color: $primary-color;
 
-$remote-cursor-color: gray;
-$remote-word-color: lightgray;
+$remote-cursor-color: #bbb;
+$remote-word-color: #ddd;
 
 $toolbar-border-color: #aaa;
 $toolbar-shadow-color: lighten($toolbar-border-color, 10%);
