@@ -252,6 +252,8 @@ class PuzzlePresenter extends Base.Presenter {
    * @param {Puzzle} puzzle
    */
   setPuzzle(puzzle) {
+    // Don't set the same puzzle twice
+    if (puzzle === this.puzzle) return
     this.puzzle = puzzle
     this.prompt.setPuzzle(puzzle)
     this.toolbar.setPuzzle(puzzle)
