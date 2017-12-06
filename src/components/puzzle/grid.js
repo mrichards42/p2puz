@@ -165,7 +165,12 @@ export default class GridPresenter extends Base.Presenter {
   }
 
   onSquareClick(idx) {
-    this.moveCursor(idx)
+    const square = this.puzzle.squares[idx]
+    if (square.idx === this.puzzle.currentSquare.idx) {
+      this.swapOrientation()
+    } else {
+      this.moveCursor(square)
+    }
     return false
   }
 
