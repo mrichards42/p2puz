@@ -1,5 +1,6 @@
 // Shared base definitions
 const path = require('path')
+const webpack = require('webpack')
 const merge = require('webpack-merge')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -32,7 +33,7 @@ const outputs = {
 const base = {
   // Output to dist directory
   output: {
-    filename: '[name].js',
+    filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
   },
   // Allow import 'SRC/$some_file'
@@ -72,7 +73,8 @@ const base = {
     ],
   },
   plugins: [
-    new ExtractTextPlugin({filename: '[name].css'}),
+    new ExtractTextPlugin({filename: '[name].[chunkhash].css'}),
+    new webpack.HashedModuleIdsPlugin(),
   ],
 }
 
