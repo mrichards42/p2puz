@@ -20,6 +20,20 @@ export class GridView extends Base.View {
     this.rows = 0
     this.cols = 0
     this.aspectRatio = 1
+    // Single click event on the entire grid so that mobile browsers don't have
+    // to deal with a click target for each square.  These would be so small
+    // that the link zooming feature would always be triggered.
+    this.$el.click(e => {
+      const $target = $(e.target)
+      let $square = $target.find('.square')
+      if (!$square.length) $square = $target.closest('.square')
+      const idx = $square.data('idx')
+      if (idx != null) {
+        return this.presenter.onSquareClick(idx)
+      } else {
+        return false
+      }
+    })
   }
 
   createGrid(rows, cols) {
@@ -41,9 +55,6 @@ export class GridView extends Base.View {
         </tr> `).join('')}
     `)
     this.$squares = this.$el.find('.square')
-    this.$squares.click(e => {
-      return this.presenter.onSquareClick($(e.currentTarget).data('idx'))
-    })
     this.resizeGrid()
   }
 
