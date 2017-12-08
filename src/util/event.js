@@ -4,18 +4,52 @@
 class EventEmitter {
   /**
    * Constructs a new event emitter.
-   * @param {...string} eventTypes - events we will emit
+   * @param {...(string|RegExp|'*')} eventTypes - events we will emit
    */
   constructor(...eventTypes) {
     this._eventEmitter = this
+    this._eventRegex = null
     this._registerEventTypes(...eventTypes)
   }
 
-  _registerEventTypes(...eventTypes) {
+  /**
+   * Register an event type.
+   * If an unregistered event is passed to {@link EventEmitter.on} or
+   * {@link EventEmitter.emit}, it will throw.
+   * @param {(string|RegExp|'*')} eventType
+   */
+  registerEventType(eventType) {
     if (!this._callbacks) this._callbacks = {}
-    for (const eventType of eventTypes) {
-      if (!this._callbacks[eventType]) this._callbacks[eventType] = []
+    if (eventType === '*') {
+      this._addRegexEvent(/.+/)
+    } else if (eventType instanceof RegExp) {
+      this._addRegexEvent(eventType)
+    } else if (!this._callbacks[eventType]) {
+      this._callbacks[eventType] = []
     }
+  }
+
+  _registerEventTypes(...eventTypes) {
+    for (const eventType of eventTypes) this.registerEventType(eventType)
+  }
+
+  _addRegexEvent(regex) {
+    regex = `(?:${regex.source})`
+    if (this._regexEvents) {
+      this._eventRegex = new RegExp(`${this._regexEvents.source}|${regex}`)
+    } else {
+      this._eventRegex = new RegExp(regex)
+    }
+  }
+
+  /**
+   * Is this a valid event type?
+   * @param {string} eventType
+   * @see EventEmitter.registerEventType
+   */
+  isValidEvent(eventType) {
+    return !!this._callbacks[eventType] ||
+      (this._eventRegex && this._eventRegex.test(eventType))
   }
 
   /**
@@ -27,6 +61,8 @@ class EventEmitter {
   on(eventType, callback) {
     if (this._callbacks[eventType]) {
       this._callbacks[eventType].push(callback)
+    } else if (this._eventRegex && this._eventRegex.test(eventType)) {
+      this._callbacks[eventType] = [callback]
     } else {
       throw new Error(`Invalid event type: ${eventType}`)
     }
@@ -39,7 +75,15 @@ class EventEmitter {
    * @see EventEmitter#on
    */
   emit(eventType, ...args) {
-    for (const callback of this._callbacks[eventType]) {
+    const callbacks = this._callbacks[eventType]
+    if (!callbacks) {
+      if (this.isValidEvent(eventType)) {
+        return // valid event but no events are registered
+      } else {
+        throw new Error(`Invalid event type: ${eventType}`)
+      }
+    }
+    for (const callback of callbacks) {
       // setTimeout here insulates this function from errors in the callback
       setTimeout(callback.bind(this, ...args), 0)
     }
@@ -68,7 +112,7 @@ export const EventEmitterMixin = (Base, ...eventTypes) => class extends Base {
     } else {
       // Otherwise, create a new emitter and delegate its functions
       this._eventEmitter = new EventEmitter(...eventTypes)
-      ;['on', 'emit'].forEach(func => {
+      ;['on', 'emit', 'isValidEvent', 'registerEventType'].forEach(func => {
         this[func] = (...args) => this._eventEmitter[func](...args)
       })
     }
