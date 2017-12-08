@@ -1,92 +1,15 @@
+/**
+ * PubNub peer broker
+ * @module util/peer/connector/pubnub
+ */
 import _ from 'lodash'
 import localforage from 'localforage'
 import PubNub from 'pubnub'
 import SimplePeer from 'simple-peer'
-import EventEmitter from 'SRC/util/event'
-
-/**
- * A WebRTC peer using PubNub for brokering.
- *
- * @example
- *
- * // Connect to a remote peer
- * const peer = new PubNubPeer()
- * peer.connect('myroom', 'user-name')
- * peer.on('connect', (simplePeerObject) => {
- *  console.log('connected!')
- * })
- *
- * // Handle remote data
- * peer.on('data', (data) => console.log('got data!'))
- *
- * // Send data to the remote peer
- * peer.send('some data!')
- */
-class PubNubPeer extends EventEmitter {
-  constructor({reconnect = true} = {}) {
-    super('connect', 'data') // Events we will handle
-    this.peer = null
-    this.reconnect = reconnect
-  }
-
-  /**
-    * Connects to the first user that enters a given room.
-    * @param {string} roomId - room id
-    * @param {string} [userId] - connect as this user
-    * @fires PubNubPeer.connect
-    */
-  connect(roomId, userId = 'unknown') {
-    // Guard against calling this multiple times
-    if (this._connecting) return
-    this._connecting = true
-    this.peer = null
-    _connectPeer(roomId, userId).then(peer => {
-      this.peer = peer
-      console.log('connected to remote peer')
-      // Hook up peer data callback and send the connect event
-      this.peer.on('data', data => { this.emit('data', data) })
-      this.emit('connect', peer)
-      // Check for peer close
-      this.peer.on('close', () => {
-        // Attempt to reconnect
-        if (this.reconnect) {
-          console.log('peer disconnected -- attempting reconnect')
-          this._connecting = false
-          this.connect(roomId, userId)
-        }
-      })
-    })
-  }
-
-  /**
-   * Sends data to the remote peer.
-   * An event will be fired on the remote peer, not on the local peer.
-   * @param {*} data - arbitrary data to send
-   * @fires PubNubPeer.data
-   */
-  send(data) {
-    this.peer.send(data)
-  }
-}
-
-/**
- * Connection established event.
- * @event PubNubPeer.connect
- * @param {SimplePeer} peer - remote peer
- */
-
-/**
- * Data received event.
- * @event PubNubPeer.data
- * @param {*} data - message payload
- */
-
-export default PubNubPeer
 
 const UUID_KEY = 'PubNubPeer.UUID'
 
-// Implementation of PubNubPeer.connect
-function _connectPeer(roomId, userId, remoteId) {
+export default function connectPeer(roomId, userId, remoteId) {
   return new Promise((resolve, reject) => {
     localforage.getItem(UUID_KEY).then(uuid => {
       if (!uuid) {
@@ -117,10 +40,12 @@ function _connectPeer(roomId, userId, remoteId) {
         peer.on('connect', () => {
           // Shut down pubnub since we don't need it anymore
           pubnub.stop()
-          // we're done here
-          resolve(peer)
+          resolve(peer) // we're done
         })
-        peer.on('error', reject)
+        peer.on('error', err => {
+          pubnub.stop()
+          reject(err)
+        })
         return peer
       }
 
@@ -156,8 +81,13 @@ function _connectPeer(roomId, userId, remoteId) {
                   reject(new Error('Attempt to connect to self'))
                 }
               } else {
-                // Sombody new joined -- create a peer and send an offer
-                peer = peer || createPeer(publisher, true)
+                // Ignore remote pings until we've seen our own ping.  This
+                // prevents a race where two peers that subscribed to pubnub
+                // at the same time could both attempt to initiate connections.
+                if (pingCount > 0) {
+                  // Sombody new joined -- create a peer and send an offer
+                  peer = peer || createPeer(publisher, true)
+                }
               }
               break
             case 'signal':
