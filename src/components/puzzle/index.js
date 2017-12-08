@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import $ from 'jquery'
 import strftime from 'SRC/util/strftime'
+import { EventEmitterMixin } from 'SRC/util/event'
 import Puzzle from 'SRC/models/puzzle'
 import Base from 'SRC/components/base'
 import Grid from './grid'
@@ -225,7 +226,7 @@ const DEFAULT_CONFIG = {
 /**
  * Puzzle presenter class.
  */
-class PuzzlePresenter extends Base.Presenter {
+class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
   /**
    * Constructs a new PuzzlePresenter.
    * @param {object} opts - options passed to {@link PuzzlePresenter#configure}
@@ -251,6 +252,7 @@ class PuzzlePresenter extends Base.Presenter {
   /**
    * Sets the puzzle for the {@link PuzzleView}
    * @param {Puzzle} puzzle
+   * @fires PuzzlePresenter.puzzle
    */
   setPuzzle(puzzle) {
     // Don't set the same puzzle twice
@@ -271,6 +273,7 @@ class PuzzlePresenter extends Base.Presenter {
       this.puzzle.currentOrientation
     )
     if (this.peer) this.peer.setPuzzle(puzzle)
+    this.emit('puzzle', puzzle)
   }
 
   /**
@@ -511,5 +514,10 @@ class PuzzlePresenter extends Base.Presenter {
     }
   }
 }
+
+/**
+ * Fired after the puzzle is changed.
+ * @event PuzzlePresenter.puzzle
+ */
 
 export default PuzzlePresenter
