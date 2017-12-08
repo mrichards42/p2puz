@@ -1,7 +1,7 @@
 import Grapnel from 'grapnel'
 import loadPolyfills from './util/polyfill'
 import getSource from './app/sources'
-import PuzzlePeer from './app/peer'
+import PeerManager from './util/peer/manager'
 import PuzzlePresenter from './components/puzzle'
 import './index.scss'
 
@@ -14,21 +14,13 @@ function main() {
   puzzlePresenter.hide()
 
   // Setup peer
-  const peer = new PuzzlePeer()
-  peer.on('puzzle', showPuzzle)
-  peer.on('puzzle-state', state => puzzlePresenter.setRemoteState(state))
+  const peerManager = new PeerManager()
+  puzzlePresenter.setPeerManager(peerManager)
+  puzzlePresenter.getPeer().on('puzzle', showPuzzle)
 
   function joinRoom(roomId, userId) {
     puzzlePresenter.hide()
-    peer.setPuzzle(null)
-    peer.on('connect', () => {
-      // Don't request a puzzle if we already have one.
-      // If we joined a room and then the room's creator disconnected and
-      // reconnected using /join-room *we* would already have the puzzle and
-      // would need to send it to *them*.
-      if (!peer.puzzle) peer.send('request-puzzle')
-    })
-    peer.connect(roomId, userId)
+    peerManager.connect(roomId, userId)
   }
 
   // Puzzle loading functions
@@ -36,7 +28,6 @@ function main() {
     puzzlePresenter.setPuzzle(puzzle)
     puzzlePresenter.show()
     document.title = puzzle.meta.title || 'Crossword Demo'
-    peer.setPuzzle(puzzle)
   }
 
   function loadPuzzle(opts) {
@@ -66,7 +57,7 @@ function main() {
 
   // Room creation context
   function connectToRoom(req, event, next) {
-    if (req.params.roomId) peer.connect(req.params.roomId)
+    if (req.params.roomId) peerManager.connect(req.params.roomId)
     next()
   }
   const withRoom = router.context('/(create-room/:roomId)?', connectToRoom)
