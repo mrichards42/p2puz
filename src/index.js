@@ -11,12 +11,15 @@ function main() {
     el: '#puzzle',
     clues: 'horizontal',
   })
+  puzzlePresenter.on('puzzle', puzzle => {
+    puzzlePresenter.show()
+    document.title = puzzle.meta.title || 'Crossword Demo'
+  })
   puzzlePresenter.hide()
 
   // Setup peer
   const peerManager = new PeerManager()
   puzzlePresenter.setPeerManager(peerManager)
-  puzzlePresenter.getPeer().on('puzzle', showPuzzle)
 
   function joinRoom(roomId, userId) {
     puzzlePresenter.hide()
@@ -24,15 +27,9 @@ function main() {
   }
 
   // Puzzle loading functions
-  function showPuzzle(puzzle) {
-    puzzlePresenter.setPuzzle(puzzle)
-    puzzlePresenter.show()
-    document.title = puzzle.meta.title || 'Crossword Demo'
-  }
-
   function loadPuzzle(opts) {
     puzzlePresenter.hide()
-    puzzlePresenter.loadPuzzle(opts).then(showPuzzle)
+    puzzlePresenter.loadPuzzle(opts)
   }
 
   function loadPuzzleFromSource(source, year, month, day) {
