@@ -35,7 +35,7 @@ const dateRegex = new RegExp(
 
 /**
  * Very basic strftime.
- * @param {Date} date - date to format
+ * @param {Date} [date=new Date()] - date to format
  * @param {string} format - format string
  *
  * @example
@@ -43,6 +43,10 @@ const dateRegex = new RegExp(
  * strftime(new Date(), 'YYYY-MM-DD')
  */
 export default function(date, format) {
+  if (!format && typeof date === 'string') {
+    format = date
+    date = new Date()
+  }
   const cache = {}
   if (typeof date === 'string') date = new Date(date)
   return format.replace(
