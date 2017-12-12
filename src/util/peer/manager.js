@@ -58,17 +58,18 @@ class PeerManager extends EventEmitter {
    * @param {object} opts
    * @param {function} [opts.broker] - function that takes a room and user id
    *                                   and returns a SimplePeer Promise.
-   * @param {boolean} [opts.autoReconnect] - automatically attempt reconnect
+   * @param {number} [opts.autoReconnect] - times to attempt autoreconnect
    *                                         when the connection is lost
    */
   constructor({
     broker = require('./broker/pubnub').default,
-    autoReconnect = true,
+    autoReconnect = 10,
   } = {}) {
     // Events -- connect and 'data:*' events are allowed
     super(...EVENTS, /^data:/)
     this.peer = null
     this.autoReconnect = autoReconnect
+    this._connectTries = 0
     this.brokerConnection = broker
     this._queue = []
   }
@@ -85,8 +86,10 @@ class PeerManager extends EventEmitter {
     if (this._connecting) return Promise.resolve(this.peer)
     this._connecting = true
     this.peer = null
+    this._connectTries++
     return this.brokerConnection(roomId, userId).then(peer => {
       this.peer = peer
+      this._connectTries = 0
       console.log('connected to remote peer')
       // Hook up peer data callback and send the connect event
       this.peer.on('data', data => this._handleData(data))
@@ -109,6 +112,20 @@ class PeerManager extends EventEmitter {
         }))
         for (const msg of this._queue) this.peer.send(msg)
         this._queue = []
+      }
+    }).catch(err => {
+      // Reconnect on errors
+      this._connecting = false
+      this.peer = null
+      console.log('Error connecting', err)
+      if (this._connectTries <= this.autoReconnect) {
+        console.log(
+          'attempting reconnect',
+          `(try ${this._connectTries} of ${this.autoReconnect})`
+        )
+        this.connect(roomId, userId)
+      } else {
+        console.log(`reconnect failed ${this.autoReconnect} times; giving up`)
       }
     })
   }
