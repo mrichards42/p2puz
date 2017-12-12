@@ -93,6 +93,7 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     this.view.addToolbar(this.toolbar)
     this.view.addPuzzle(this.puzzlePresenter)
     this.view.addSidebar(this.chat, 'right')
+    this.chat.on('link', (...args) => this.handleChatLink(...args))
     // Set initial config
     this._config = {}
     this.configure(_.assign({}, DEFAULT_CONFIG(this), opts))
@@ -190,6 +191,19 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
 
   getPeer() {
     return this.peer
+  }
+
+  // Chat Links
+  handleChatLink(number, orientation) {
+    if (this.puzzle && this.puzzle.clues[orientation]) {
+      for (const clue of this.puzzle.clues[orientation]) {
+        // Data types could be different here
+        if (clue.number == number) { // eslint-disable-line eqeqeq
+          this.puzzle.moveCursor(clue.square, orientation)
+          return
+        }
+      }
+    }
   }
 
   toggleSidebar(view, state) {

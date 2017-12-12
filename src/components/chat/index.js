@@ -1,14 +1,32 @@
 import $ from 'jquery'
 import strftime from 'util/strftime'
+import { EventEmitterMixin } from 'util/event'
 import Base from 'components/base'
 import Peer from './peer'
 import './index.scss'
+
+// Replace links to clues in message text
+const ORIENTATION = {across: 'across', down: 'down', a: 'across', d: 'down'}
+const clueRegex = /(\d+)\.?\s*(across|down|a\b|d\b)/ig
+const linkForClue = (text, number, orientation) => `
+  <a class="chat-clue-link" href="javascript:void(0)"
+      data-number="${number}"
+      data-orientation="${ORIENTATION[orientation.toLowerCase()]}">
+    ${text}
+  </a>
+`
+function replaceClueLinks(msg) {
+  return msg.replace(clueRegex, linkForClue)
+}
 
 const TEMPLATE = `
   <div class="chat-wrapper">
     <div class="chat-status" />
     <div class="chat-log">
       <div class="chat-welcome">
+        <p>Use this space to chat with your peer. If you send a message with a
+        clue number, it will appear as a link:</p>
+        <p>E.g. ${replaceClueLinks('1 across')}, ${replaceClueLinks('2d')}</p>
       </div>
     </div>
     <div class="chat-bar">
@@ -44,6 +62,11 @@ export class ChatView extends Base.View {
       this.presenter.onSendClick(message)
       this.$input.focus()
     })
+    this.$el.on('click', 'a.chat-clue-link', e => {
+      const $a = $(e.currentTarget)
+      this.presenter.onLinkClick($a.data('number'), $a.data('orientation'))
+      return false
+    })
     this.setStatus('Disconnected')
   }
 
@@ -59,6 +82,8 @@ export class ChatView extends Base.View {
       this.$lastChat.addClass('chat-last')
       cssClass += ' chat-first'
     }
+    // Check the message for clue links
+    msg = replaceClueLinks(msg)
     // Add message to the chat log
     this.$lastChat = $(CHAT_LOG_TEMPLATE(
       msg,
@@ -90,7 +115,7 @@ export class ChatView extends Base.View {
 /**
  * Chat presenter class.
  */
-class ChatPresenter extends Base.Presenter {
+class ChatPresenter extends EventEmitterMixin(Base.Presenter, 'link') {
   constructor({el, view = new ChatView(), ...opts} = {}) {
     super({view, el, ...opts})
   }
@@ -103,6 +128,10 @@ class ChatPresenter extends Base.Presenter {
     this.view.addChat(message)
     if (this.peer) this.peer.send('message', message)
     return false
+  }
+
+  onLinkClick(number, orientation) {
+    this.emit('link', number, orientation)
   }
 
   // Remote events

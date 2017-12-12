@@ -8,6 +8,20 @@
   border: 1px solid gray;
 }
 
+// Welcome message
+
+.chat-welcome {
+  color: gray;
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+
+  p {
+    margin: 0;
+    padding: 0.25em;
+  }
+}
+
 // Status
 .chat-status {
   color: gray;
