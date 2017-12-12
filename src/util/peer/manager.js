@@ -93,6 +93,7 @@ class PeerManager extends EventEmitter {
       this.emit('connect', peer)
       // Check for peer close
       this.peer.on('close', () => {
+        this.emit('close')
         this._connecting = false
         this.peer = null
         if (this.autoReconnect) {
