@@ -5,13 +5,37 @@ import Puzzle from 'models/puzzle'
 import Base from 'components/base'
 import PuzzlePresenter from 'components/puzzle'
 import Toolbar from 'components/toolbar'
+import Chat from 'components/chat'
+import PuzzlePeer from './peer'
 import './index.scss'
 
-const TEMPLATE = '<div class="puzzle-app"></div>'
+const TEMPLATE = `
+  <div class="puzzle-app">
+    <div class="puzzle-layout" />
+  </div>
+`
 
 export class AppView extends Base.View {
   constructor({template = TEMPLATE, ...opts} = {}) {
     super({template, ...opts})
+    this.$layout = this.$('.puzzle-layout')
+    this.sidebar = {}
+  }
+
+  addToolbar(view) {
+    this.$el.prepend(view.$el)
+  }
+
+  addPuzzle(view) {
+    this.$layout.append(view.$el)
+  }
+
+  addSidebar(view, side = 'right') {
+    if (side === 'right') {
+      this.$layout.append(view.$el)
+    } else {
+      this.$layout.prepend(view.$el)
+    }
   }
 }
 
@@ -61,9 +85,11 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     super({view, el, ...opts})
     this.puzzle = null
     this.components = [
-      this.toolbar = new Toolbar().appendTo(this),
-      this.puzzlePresenter = new PuzzlePresenter().appendTo(this),
+      this.toolbar = new Toolbar(),
+      this.puzzlePresenter = new PuzzlePresenter(),
     ]
+    this.view.addToolbar(this.toolbar)
+    this.view.addPuzzle(this.puzzlePresenter)
     // Set initial config
     this._config = {}
     this.configure(_.assign({}, DEFAULT_CONFIG, opts))

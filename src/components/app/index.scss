@@ -8,6 +8,13 @@
   width: 100%;
 }
 
+.puzzle-layout {
+  display: flex;
+  flex-flow: row;
+  flex: 1;
+  min-height: 0; // allow shrink
+}
+
 // Metadata styles
 
 .toolbar-puzzle-title {
