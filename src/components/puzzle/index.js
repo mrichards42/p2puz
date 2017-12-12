@@ -222,12 +222,19 @@ class PuzzlePresenter extends Base.Presenter {
     // determined their size
     this.view.setGridAspectRatio(puzzle.cols, puzzle.rows)
     this.grid.setPuzzle(puzzle)
-    this.view.handleResize()
+    this.layout()
     // Trigger events
     this.puzzle.moveCursor(
       this.puzzle.currentSquare,
       this.puzzle.currentOrientation
     )
+  }
+
+  /**
+   * Forces a re-layout.
+   */
+  layout() {
+    this.view.handleResize()
   }
 
   /**

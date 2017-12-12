@@ -169,6 +169,7 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
 
   show() {
     super.show()
+    this.puzzlePresenter.layout()
     return this
   }
 
