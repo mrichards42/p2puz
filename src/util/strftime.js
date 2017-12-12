@@ -26,6 +26,23 @@ const FORMATS = {
   m:    d => d.getMinutes(),
   ss:   d => ('0' + d.getSeconds()).slice(-2),
   s:    d => d.getSeconds(),
+  'AM/PM': d => d.getHours() < 12 ? 'AM' : 'PM',
+  'am/pm': d => d.getHours() < 12 ? 'am' : 'pm',
+}
+
+const FORMATS_AMPM = {
+  hh: d => _fixHour(FORMATS.hh(d), true),
+  h:  d => _fixHour(FORMATS.h(d), false),
+}
+
+function _fixHour(h, pad) {
+  if (h === '00' || h === '0') {
+    return '12'
+  } else if (h > 12) {
+    return pad ? ('0' + (h - 12)).slice(-2) : h - 12
+  } else {
+    return h
+  }
 }
 
 const dateRegex = new RegExp(
@@ -42,15 +59,18 @@ const dateRegex = new RegExp(
  * // Allowed codes: YYYY, MM, DD, hh, mm, ss (and variants)
  * strftime(new Date(), 'YYYY-MM-DD')
  */
-export default function(date, format) {
+export default window.strftime = function(date, format) {
   if (!format && typeof date === 'string') {
     format = date
     date = new Date()
   }
   const cache = {}
   if (typeof date === 'string') date = new Date(date)
+  const ampm = /am\/pm/i.test(format)
   return format.replace(
     dateRegex,
-    m => (cache[m] = cache[m] || FORMATS[m](date))
-  )
+    m => (
+      cache[m] = cache[m] ||
+        (ampm ? FORMATS_AMPM[m] || FORMATS[m] : FORMATS[m])(date)
+    ))
 }
