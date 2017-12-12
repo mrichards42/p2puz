@@ -66,6 +66,7 @@ export class ChatView extends Base.View {
       cssClass
     ))
     this.$chatLog.append(this.$lastChat)
+    this.$chatLog.animate({scrollTop: this.$chatLog.height()})
   }
 
   /**
