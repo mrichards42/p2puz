@@ -1,0 +1,98 @@
+@import '~app/colors';
+
+.chat-wrapper {
+  display: flex;
+  flex-flow: column;
+  padding: 0.25em;
+  width: 15em;
+  border: 1px solid gray;
+}
+
+// Status
+.chat-status {
+  color: gray;
+  text-align: center;
+  width: 100%;
+  margin: 0.25em 0;
+
+  & > * {
+    background: lightgray;
+    padding: 0.25em 0;
+  }
+
+  .chat-connected {
+    color: black;
+    background: $primary-color;
+  }
+}
+
+
+// Chat log and messages
+.chat-log {
+  overflow: auto;
+}
+
+.chat-text {
+  display: inline-block;
+  background: $primary-color;
+  margin-bottom: 1px;
+  max-width: 75%;
+}
+
+.chat-self .chat-text {
+  background: lightgray;
+}
+
+// Border radius based on chat order
+$radius: 0.75em;
+$padding: 0.2em 0.5em;
+
+.chat-remote {
+  text-align: left;
+  .chat-text {
+    border-radius: 0 $radius $radius 0;
+    padding: $padding;
+  }
+  &.chat-first .chat-text {
+    border-top-left-radius: $radius;
+  }
+  &.chat-last .chat-text, &:last-child .chat-text {
+    border-bottom-left-radius: $radius;
+  }
+}
+
+.chat-self {
+  text-align: right;
+  .chat-text {
+    border-radius: $radius 0 0 $radius;
+    padding: $padding;
+  }
+  &.chat-first .chat-text {
+    border-top-right-radius: $radius;
+  }
+  &.chat-last .chat-text, &:last-child .chat-text {
+    border-bottom-right-radius: $radius;
+  }
+}
+
+.chat-remote {
+  border-radius: 0 1em;
+  .chat-first & {
+    border-top-left-radius: $radius;
+  }
+  .chat-last & {
+    border-bottom-left-radius: $radius;
+  }
+}
+
+// Show only the last timestamp
+.chat-timestamp {
+  font-size: 0.75em;
+  color: gray;
+  margin: 0.75em 0.25em;
+
+  display: none;
+  .chat-message:last-child & {
+    display: block;
+  }
+}
