@@ -70,6 +70,7 @@ class PeerManager extends EventEmitter {
     this.peer = null
     this.autoReconnect = autoReconnect
     this.brokerConnection = broker
+    this._queue = []
   }
 
   /**
@@ -99,6 +100,9 @@ class PeerManager extends EventEmitter {
           this.connect(roomId, userId)
         }
       })
+      // Flush queued messages
+      for (const msg in this._queue) this.peer.send(msg)
+      this._queue = []
     })
   }
 
@@ -114,9 +118,14 @@ class PeerManager extends EventEmitter {
    * A data event will be fired on the remote peer, not on the local peer.
    * @param {string} type - message type
    * @param {*} data - arbitrary data to send
+   * @param {boolean} [queue] - should this be queued if we're disconnected?
    */
-  send(type, data) {
-    if (this.peer) this.peer.send(JSON.stringify({type, data}))
+  send(type, data, queue = false) {
+    if (this.peer) {
+      this.peer.send(JSON.stringify({type, data}))
+    } else if (queue) {
+      this._queue.push(JSON.stringify({type, data}))
+    }
   }
 
   _handleData(msg) {

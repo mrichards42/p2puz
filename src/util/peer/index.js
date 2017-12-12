@@ -87,13 +87,15 @@ class Peer extends EventEmitter {
    * @param {string} type - message type
    * @param {*} [data] - message payload. If omitted, it will be determined
    *                     based on the message type.
+   * @param {boolean} [queue] - queue if there is no connection? Default is set
+   *                            in {@link Peer#registerDataType}
    */
-  send(type, data = null) {
+  send(type, data = null, queue = null) {
     const funcs = this._dataTypes[type]
     if (!funcs) throw new Error(`Sending unknown data type: ${type}`)
     if (data === null && funcs.default) data = funcs.default(this)
     if (funcs.send) data = funcs.send(data, this)
-    this.manager.send(type, data)
+    this.manager.send(type, data, queue != null ? queue : funcs.queue)
   }
 
   _handleData(type, data) {
