@@ -61,15 +61,16 @@ const TITLE_FORMAT = ({title, date, author, editor, copyright}) => {
   `
 }
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG = app => ({
   responsive: true,
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
   toolbar: [
     {html: TITLE_FORMAT, class: 'toolbar-puzzle-title'},
+    {label: 'p2p', events: {click: () => app.toggleSidebar(app.chat)}},
   ],
-}
+})
 
 /**
  * Main app class.
@@ -87,12 +88,14 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     this.components = [
       this.toolbar = new Toolbar(),
       this.puzzlePresenter = new PuzzlePresenter(),
+      this.chat = new Chat().hide(),
     ]
     this.view.addToolbar(this.toolbar)
     this.view.addPuzzle(this.puzzlePresenter)
+    this.view.addSidebar(this.chat, 'right')
     // Set initial config
     this._config = {}
-    this.configure(_.assign({}, DEFAULT_CONFIG, opts))
+    this.configure(_.assign({}, DEFAULT_CONFIG(this), opts))
   }
 
   /**
@@ -174,6 +177,7 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
 
   setPeer(peer) {
     this.peer = peer
+    peer.on('connect', () => this.toggleSidebar(this.chat, true))
     // Puzzle events
     peer.on('puzzle', puzzle => {
       if (puzzle) this.setPuzzle(puzzle)
