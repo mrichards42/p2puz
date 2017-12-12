@@ -24,7 +24,7 @@ const outputs = {
       // template options
       lang: 'en',
       scripts: DEPENDENCIES.src('lodash', 'jquery', 'mousetrap', 'localforage', 'pubnub', 'simple-peer'),
-      appMountId: 'puzzle',
+      appMountId: 'app',
     }),
   ],
 }

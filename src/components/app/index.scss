@@ -1,0 +1,28 @@
+// Basic styles
+.puzzle-app {
+  font-family: sans-serif;
+  font-size: 0.9em;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 100%;
+}
+
+// Metadata styles
+
+.toolbar-puzzle-title {
+  flex: auto;
+  padding: 0.25em;
+  display: flex;
+  flex-flow: row wrap;
+
+  .meta-title {
+    font-size: 1.25em;
+    width: 100%;
+  }
+
+  .meta-author, .meta-copyright {
+    font-size: 0.8em;
+    margin-right: 1em;
+  }
+}

@@ -2,34 +2,34 @@ import Grapnel from 'grapnel'
 import loadPolyfills from './util/polyfill'
 import getSource from './app/sources'
 import PeerManager from './util/peer/manager'
-import PuzzlePresenter from './components/puzzle'
+import AppPresenter from './components/app'
 import './index.scss'
 
 function main() {
   // Setup presenter
-  const puzzlePresenter = new PuzzlePresenter({
-    el: '#puzzle',
+  const app = new AppPresenter({
+    el: '#app',
     clues: 'horizontal',
   })
-  puzzlePresenter.on('puzzle', puzzle => {
-    puzzlePresenter.show()
+  app.on('puzzle', puzzle => {
+    app.show()
     document.title = puzzle.meta.title || 'Crossword Demo'
   })
-  puzzlePresenter.hide()
+  app.hide()
 
   // Setup peer
   const peerManager = new PeerManager()
-  puzzlePresenter.setPeerManager(peerManager)
+  app.setPeerManager(peerManager)
 
   function joinRoom(roomId, userId) {
-    puzzlePresenter.hide()
+    app.hide()
     peerManager.connect(roomId, userId)
   }
 
   // Puzzle loading functions
   function loadPuzzle(opts) {
-    puzzlePresenter.hide()
-    puzzlePresenter.loadPuzzle(opts)
+    app.hide()
+    app.loadPuzzle(opts)
   }
 
   function loadPuzzleFromSource(source, year, month, day) {

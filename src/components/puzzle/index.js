@@ -1,26 +1,20 @@
 import _ from 'lodash'
 import $ from 'jquery'
-import strftime from 'SRC/util/strftime'
-import { EventEmitterMixin } from 'SRC/util/event'
-import Puzzle from 'SRC/models/puzzle'
 import Base from 'SRC/components/base'
 import Grid from './grid'
 import Prompt from './prompt'
 import ClueList from './clues'
 import Metadata from './metadata'
-import Toolbar from './toolbar'
 import Peer from './peer'
 import './index.scss'
 
 const TEMPLATE = `
   <div class="puzzle">
-    <div class="puzzle-wrapper">
-      <div class="grid-and-prompt">
-        <div class="prompt" />
-        <div class="grid" />
-      </div>
-      <div class="clues-container" />
+    <div class="grid-and-prompt">
+      <div class="prompt" />
+      <div class="grid" />
     </div>
+    <div class="clues-container" />
   </div>
 `
 
@@ -30,7 +24,6 @@ const TEMPLATE = `
 export class PuzzleView extends Base.View {
   constructor({template = TEMPLATE, ...opts} = {}) {
     super({template, ...opts})
-    this.$wrapper = this.$('.puzzle-wrapper')
     this.$cluesContainer = this.$('.clues-container')
     this.$prompt = this.$('.prompt')
     this.$grid = this.$('.grid')
@@ -40,14 +33,6 @@ export class PuzzleView extends Base.View {
     this.handleResize = _.throttle(this.handleResize.bind(this), 10)
     $(window).resize(this.handleResize)
     $(this.handleResize) // Defer initial resize until after first layout
-  }
-
-  /**
-   * Adds the toolbar sub-view
-   * @param {View} view
-   */
-  addToolbar(view) {
-    this.$el.prepend(view.$el)
   }
 
   /**
@@ -159,8 +144,8 @@ export class PuzzleView extends Base.View {
   }
 
   handleResize() {
-    const width = this.$wrapper.width()
-    const height = this.$wrapper.height()
+    const width = this.$el.width()
+    const height = this.$el.height()
     const canSkip = width === 0 || height === 0 ||
       (this._lastWidth === width && this._lastHeight === height)
     if (canSkip) return
@@ -192,41 +177,17 @@ export class PuzzleView extends Base.View {
 }
 
 // Presenter config
-
-const TITLE_FORMAT = ({title, date, author, editor, copyright}) => {
-  // Normalize title
-  if (!title && date) title = strftime(date, '<b>DDDD</b>, MMMM D, YYYY')
-  // Normalize author and editor
-  if (!editor) [, author, editor] = author.match(/(.*)\/(.*)/) || ['', author]
-  if (author) author = 'By ' + author.replace(/^\s*by\s+/i, '')
-  if (editor) editor = 'Edited by ' + editor.replace(/^\s*\w*\s*by\s+/i, '')
-  author = author && editor ? author + ' \u25AA ' + editor : author || editor
-  // Normalize copyright
-  if (copyright && !/\u00A9/.test(copyright)) {
-    copyright = '\u00A9 ' + copyright.replace(/^\s*\(c\)\s*/i, '')
-  }
-  // Template
-  return `
-    <span class="meta-title">${title || ''}</span>
-    <span class="meta-author">${author || ''}</span>
-    <span class="meta-copyright">${copyright || ''}</span>
-  `
-}
-
 const DEFAULT_CONFIG = {
   responsive: true,
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
-  toolbar: [
-    {html: TITLE_FORMAT, class: 'toolbar-puzzle-title'},
-  ],
 }
 
 /**
  * Puzzle presenter class.
  */
-class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
+class PuzzlePresenter extends Base.Presenter {
   /**
    * Constructs a new PuzzlePresenter.
    * @param {object} opts - options passed to {@link PuzzlePresenter#configure}
@@ -238,10 +199,8 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     this.puzzle = null
     this.prompt = new Prompt()
     this.grid = new Grid()
-    this.toolbar = new Toolbar()
     this.clues = {}
     this.meta = []
-    this.view.addToolbar(this.toolbar)
     this.view.addPrompt(this.prompt.view)
     this.view.addGrid(this.grid.view)
     // Set initial config
@@ -252,14 +211,12 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
   /**
    * Sets the puzzle for the {@link PuzzleView}
    * @param {Puzzle} puzzle
-   * @fires PuzzlePresenter.puzzle
    */
   setPuzzle(puzzle) {
     // Don't set the same puzzle twice
     if (puzzle === this.puzzle) return
     this.puzzle = puzzle
     this.prompt.setPuzzle(puzzle)
-    this.toolbar.setPuzzle(puzzle)
     this._setupClues()
     this.meta.forEach(m => m.setPuzzle(puzzle))
     // Setup grid last so we can trigger a resize after other elements have
@@ -273,27 +230,6 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
       this.puzzle.currentOrientation
     )
     if (this.peer) this.peer.setPuzzle(puzzle)
-    this.emit('puzzle', puzzle)
-  }
-
-  /**
-   * Loads a puzzle from data or a url.
-   * @param {object} opts
-   * @param {string} opts.type - puzzle format
-   * @param {string} [opts.url] - puzzle url
-   * @param {*} [opts.data] - puzzle data (specific to format)
-   * @returns {Promise}
-   */
-  loadPuzzle({type, url, data}) {
-    if (url) {
-      return Puzzle.fetch(type, url).then(p => { this.setPuzzle(p); return p })
-    } else {
-      return new Promise((resolve, reject) => {
-        const p = Puzzle.load(type, data)
-        this.setPuzzle(p)
-        resolve(p)
-      })
-    }
   }
 
   /**
@@ -313,7 +249,6 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
       clues: this.setClueLayout,
       orientation: this.setLayoutOrientation,
       metadata: this.setMetadata,
-      toolbar: this.configureToolbar,
     }
     // Execute the specified function for each option
     for (const k in opts) {
@@ -369,18 +304,6 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
    */
   setLayoutOrientation(orientation) {
     this.view.setLayoutOrientation(orientation)
-  }
-
-  /**
-   * Sets the toolbar config
-   * @param {object[]} tools - array of tool definitions
-   * @param {string} tools[].label - menu label
-   * @param {string} [tools[].html] - item html override (default: label)
-   * @param {object} [tools[].events] - event mapping
-   * @param {array} [tools[].items] - sub items
-   */
-  configureToolbar(tools) {
-    this.toolbar.setTools(tools)
   }
 
   /**
@@ -514,10 +437,5 @@ class PuzzlePresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     }
   }
 }
-
-/**
- * Fired after the puzzle is changed.
- * @event PuzzlePresenter.puzzle
- */
 
 export default PuzzlePresenter

@@ -4,18 +4,9 @@
 }
 
 .puzzle {
-  font-family: sans-serif;
-  font-size: 0.9em;
   display: flex;
   flex-flow: column;
-  height: 100%;
-  width: 100%;
-
-  .puzzle-wrapper {
-    display: flex;
-    flex: 1;
-    min-height: 0; // To allow shrink
-  }
+  min-height: 0; // to allow shrink
 
   .grid-and-prompt {
     display: flex;
@@ -57,11 +48,11 @@
 }
 
 // Layouts
-.puzzle.orientation-portrait .puzzle-wrapper {
+.puzzle.orientation-portrait {
   flex-flow: column;
 }
 
-.puzzle.orientation-landscape .puzzle-wrapper {
+.puzzle.orientation-landscape {
   flex-flow: row;
 }
 
@@ -115,24 +106,5 @@ $clue-min-height: 5em;
     flex: 1;
     min-width: $clue-min-width;
     min-height: $clue-min-height;
-  }
-}
-
-// Metadata styles
-
-.toolbar-puzzle-title {
-  flex: auto;
-  padding: 0.25em;
-  display: flex;
-  flex-flow: row wrap;
-
-  .meta-title {
-    font-size: 1.25em;
-    width: 100%;
-  }
-
-  .meta-author, .meta-copyright {
-    font-size: 0.8em;
-    margin-right: 1em;
   }
 }

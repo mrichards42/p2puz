@@ -1,6 +1,7 @@
-@import 'colors';
+@import '../puzzle/colors';
 
 .puzzle-toolbar {
+  flex: none;
   display: flex;
   z-index: 10;
   min-height: 2em;
