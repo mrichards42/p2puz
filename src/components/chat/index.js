@@ -58,6 +58,7 @@ export class ChatView extends Base.View {
     this.$send = this.$('.chat-bar button')
     this.$send.click(() => {
       const message = this.getInput()
+      if (/^\s*$/.test(message)) return false // prevent empty messages
       this.setInput('')
       this.presenter.onSendClick(message)
       this.$input.focus()
