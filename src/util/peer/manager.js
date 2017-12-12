@@ -101,8 +101,14 @@ class PeerManager extends EventEmitter {
         }
       })
       // Flush queued messages
-      for (const msg in this._queue) this.peer.send(msg)
-      this._queue = []
+      if (this._queue.length) {
+        // Send flush time for timestamped messages
+        this.peer.send(JSON.stringify({
+          type: 'time-sync', timestamp: new Date().getTime(),
+        }))
+        for (const msg of this._queue) this.peer.send(msg)
+        this._queue = []
+      }
     })
   }
 
@@ -124,13 +130,20 @@ class PeerManager extends EventEmitter {
     if (this.peer) {
       this.peer.send(JSON.stringify({type, data}))
     } else if (queue) {
-      this._queue.push(JSON.stringify({type, data}))
+      const timestamp = new Date().getTime()
+      this._queue.push(JSON.stringify({type, data, timestamp}))
     }
   }
 
   _handleData(msg) {
-    const {type, data} = JSON.parse(msg)
-    this.emit(`data:${type}`, data)
+    let {type, data, timestamp} = JSON.parse(msg)
+    // If we got a time-sync message (before a queue flush), fix the timestamp
+    if (type === 'time-sync') {
+      this._remoteOffset = new Date().getTime() - timestamp
+    } else if (timestamp) {
+      timestamp += this._remoteOffset || 0
+    }
+    this.emit(`data:${type}`, data, timestamp)
   }
 }
 

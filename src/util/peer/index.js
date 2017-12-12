@@ -60,7 +60,9 @@ class Peer extends EventEmitter {
     this.registerEventType(type)
     this._dataTypes[type] = opts || {}
     // Register this data event with the manager
-    this.manager.on(`data:${type}`, data => this._handleData(type, data))
+    this.manager.on(`data:${type}`, (data, ...args) => {
+      this._handleData(type, data, ...args)
+    })
   }
 
   /**
@@ -98,7 +100,7 @@ class Peer extends EventEmitter {
     this.manager.send(type, data, queue != null ? queue : funcs.queue)
   }
 
-  _handleData(type, data) {
+  _handleData(type, data, ...args) {
     const funcs = this._dataTypes[type]
     if (!funcs) {
       // This should never happen since we only listen for valid events, which
@@ -106,7 +108,7 @@ class Peer extends EventEmitter {
       throw new Error(`Receiving unknown data type: ${type}`)
     }
     if (funcs.receive) data = funcs.receive(data, this)
-    this.emit(type, data)
+    this.emit(type, data, ...args)
   }
 }
 
