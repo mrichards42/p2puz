@@ -78,6 +78,7 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     // Don't set the same puzzle twice
     if (puzzle === this.puzzle) return
     this.puzzle = puzzle
+    if (this.peer) this.peer.setPuzzle(puzzle)
     this._componentCall('setPuzzle', puzzle)
     this.emit('puzzle', puzzle)
   }
@@ -139,8 +140,36 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     this.toolbar.addTool(tool)
   }
 
+  // Remote events
   setPeerManager(manager) {
+    if (!this.peer) this.setPeer(new PuzzlePeer(manager))
     this._componentCall('setPeerManager', manager)
+  }
+
+  setPeer(peer) {
+    this.peer = peer
+    // Puzzle events
+    peer.on('puzzle', puzzle => {
+      if (puzzle) this.setPuzzle(puzzle)
+    })
+    peer.on('puzzle-state', state => {
+      if (this.puzzle) this.puzzlePresenter.setRemoteState(state)
+    })
+    if (this.puzzle) peer.setPuzzle(this.puzzle)
+  }
+
+  getPeer() {
+    return this.peer
+  }
+
+  toggleSidebar(view, state) {
+    view.toggle(state)
+    this.puzzlePresenter.layout()
+  }
+
+  show() {
+    super.show()
+    return this
   }
 
   _componentCall(func, ...args) {
@@ -149,11 +178,6 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     }
   }
 
-  show() {
-    super.show()
-    this._componentCall('show')
-    return this
-  }
 }
 
 /**

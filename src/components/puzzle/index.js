@@ -5,7 +5,6 @@ import Grid from './grid'
 import Prompt from './prompt'
 import ClueList from './clues'
 import Metadata from './metadata'
-import Peer from './peer'
 import './index.scss'
 
 const TEMPLATE = `
@@ -229,7 +228,6 @@ class PuzzlePresenter extends Base.Presenter {
       this.puzzle.currentSquare,
       this.puzzle.currentOrientation
     )
-    if (this.peer) this.peer.setPuzzle(puzzle)
   }
 
   /**
@@ -351,24 +349,9 @@ class PuzzlePresenter extends Base.Presenter {
     this.grid.view.resizeGrid()
   }
 
-  // Remote events
-  setPeerManager(manager) {
-    if (!this.peer) this.setPeer(new Peer(manager))
-  }
-
-  setPeer(peer) {
-    this.peer = peer
-    peer.on('puzzle', puzzle => {
-      if (puzzle) this.setPuzzle(puzzle)
-    })
-    peer.on('puzzle-state', state => {
-      if (this.puzzle) this.grid.setRemoteState(state)
-    })
-    if (this.puzzle) peer.setPuzzle(this.puzzle)
-  }
-
-  getPeer() {
-    return this.peer
+  // Remote
+  setRemoteState(state) {
+    this.grid.setRemoteState(state)
   }
 
   // Additional UI
