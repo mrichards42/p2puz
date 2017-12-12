@@ -2,8 +2,8 @@
  * AcrossLite puz format
  * @module puzzle/format/puz
  */
-import StringDataView from 'SRC/util/stringdataview'
-import fetchProxy from 'SRC/util/fetch'
+import StringDataView from 'util/stringdataview'
+import fetchProxy from 'util/fetch'
 import Puzzle from '..'
 
 const MAGIC = 'ACROSS&DOWN\0'

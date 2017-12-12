@@ -1,4 +1,4 @@
-import settings from 'SRC/app/settings'
+import settings from 'app/settings'
 
 export default settings.set({
   grid: {

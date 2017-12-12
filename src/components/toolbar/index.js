@@ -1,6 +1,6 @@
 import $ from 'jquery'
-import Base from 'SRC/components/base'
-import Metadata from '../puzzle/metadata'
+import Base from 'components/base'
+import Metadata from 'components/puzzle/metadata'
 import './index.scss'
 
 const TOOLBAR_TEMPLATE = `

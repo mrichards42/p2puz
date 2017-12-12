@@ -1,4 +1,4 @@
-import Base from 'SRC/components/base'
+import Base from 'components/base'
 import './metadata.scss'
 
 const META_TEMPLATE = `<div></div>`

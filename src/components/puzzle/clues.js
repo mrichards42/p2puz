@@ -1,6 +1,6 @@
 import $ from 'jquery'
+import Base from 'components/base'
 import settings from './settings'
-import Base from 'SRC/components/base'
 import './clues.scss'
 
 const TEMPLATE = `

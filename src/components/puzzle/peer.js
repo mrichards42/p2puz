@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import Peer from 'SRC/util/peer'
-import Puzzle from 'SRC/models/puzzle'
+import Peer from 'util/peer'
+import Puzzle from 'models/puzzle'
 
 const DATA_TYPES = {
   /**

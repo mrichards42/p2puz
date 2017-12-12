@@ -1,4 +1,4 @@
-import EventEmitter from 'SRC/util/event'
+import EventEmitter from 'util/event'
 
 // File types
 const FORMATS = {}

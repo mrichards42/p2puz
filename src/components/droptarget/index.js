@@ -1,5 +1,5 @@
-import Base from 'SRC/components/base'
-import { EventEmitterMixin } from 'SRC/util/event'
+import Base from 'components/base'
+import { EventEmitterMixin } from 'util/event'
 import './index.scss'
 
 const TEMPLATE = `

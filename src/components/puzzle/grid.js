@@ -2,7 +2,7 @@ import _ from 'lodash'
 import $ from 'jquery'
 import Mousetrap from 'mousetrap'
 import settings from './settings'
-import Base from 'SRC/components/base'
+import Base from 'components/base'
 import './grid.scss'
 
 const VALID_KEYS =

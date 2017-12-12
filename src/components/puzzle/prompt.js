@@ -1,4 +1,4 @@
-import Base from 'SRC/components/base'
+import Base from 'components/base'
 import './prompt.scss'
 
 const PROMPT_TEMPLATE = `

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import $ from 'jquery'
-import Base from 'SRC/components/base'
+import Base from 'components/base'
 import Grid from './grid'
 import Prompt from './prompt'
 import ClueList from './clues'

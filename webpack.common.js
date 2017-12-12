@@ -36,11 +36,11 @@ const base = {
     filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
   },
-  // Allow import 'SRC/$some_file'
   resolve: {
-    alias: {
-      SRC: path.resolve(__dirname, 'src'),
-    },
+    modules: [
+      path.resolve(__dirname, 'src'), // use /src as a module path
+      'node_modules',
+    ],
   },
   // External dependencies
   externals: DEPENDENCIES.externals(),

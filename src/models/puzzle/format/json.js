@@ -2,8 +2,8 @@
  * nyt json format
  * @module puzzle/format/json
  */
+import fetchProxy from 'util/fetch'
 import Puzzle from '..'
-import fetchProxy from 'SRC/util/fetch'
 
 /**
  * Puzzle JSON format

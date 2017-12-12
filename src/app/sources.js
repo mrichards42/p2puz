@@ -1,5 +1,5 @@
 /** @module app/sources */
-import strftime from 'SRC/util/strftime'
+import strftime from 'util/strftime'
 import SOURCES from './sources.defn'
 
 /**
