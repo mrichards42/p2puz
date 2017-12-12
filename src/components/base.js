@@ -55,6 +55,22 @@ class ElementContainer {
   _as$(item) {
     return item instanceof ElementContainer ? item.$el : $(item)
   }
+
+  /**
+   * Toggles the element
+   * @param {boolean} [state] - force show or hide
+   * @returns this
+   */
+  toggle(state) {
+    if (state == null) state = this.$el.css('display') === 'none'
+    // Don't just $el.toggle() in case show or hide is overridden
+    if (state) {
+      return this.show()
+    } else {
+      return this.hide()
+    }
+  }
+
 }
 
 /**
@@ -214,6 +230,11 @@ class Presenter extends ElementContainer {
     this.view.show()
     return this
   }
+
+  /**
+   * Toggles the element
+   * @returns this
+   */
 }
 
 export default {View, Presenter}
