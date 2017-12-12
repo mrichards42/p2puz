@@ -18,13 +18,13 @@ https://mrichards42.github.io/p2puz/#/puzzle-url/puz/http://herbach.dnsalias.com
 
 Create a room
 
-https://mrichards42.github.io.p2puz/#/create-room/myroom/puzzle/jonesin/current
+https://mrichards42.github.io/p2puz/#/create-room/myroom/puzzle/jonesin/current
 
 Join a room
 
-https://mrichards42.github.io.p2puz/#/join-room/myroom
+https://mrichards42.github.io/p2puz/#/join-room/myroom
 
 *Note: these urls will not work for testing on the same machine.  In order to
 use one machine for testing, you must add a fake username after the room:*
 
-https://mrichards42.github.io.p2puz/#/join-room/myroom|myusername
+https://mrichards42.github.io/p2puz/#/join-room/myroom|myusername
