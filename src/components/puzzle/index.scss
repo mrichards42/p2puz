@@ -8,6 +8,7 @@
   flex-flow: column;
   flex: 1;
   min-height: 0; // to allow shrink
+  overflow: hidden;
 
   .grid-and-prompt {
     display: flex;

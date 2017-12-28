@@ -147,14 +147,21 @@ export class PuzzleView extends Base.View {
     const height = this.$el.height()
     const canSkip = width === 0 || height === 0 ||
       (this._lastWidth === width && this._lastHeight === height)
+    const isFirstLayout = !this._lastWidth || !this._lastHeight
     if (canSkip) return
     // Send responsive resize to presenter
     if (this.isResponsive()) {
+      // If this is the first layout we need to constrain the grid so that
+      // the responsive layout algorithm has an accurate grid size
+      if (isFirstLayout) this._constrainGrid(width, height)
       this.presenter.onResize(this._lastWidth, this._lastHeight, width, height)
-      // We have to resize the grid here the first time so the calculations
-      // below will work correctly
-      if (!this._lastWidth || !this._lastHeight) this.presenter.resizeGrid()
     }
+    this._constrainGrid(width, height)
+    this._lastWidth = width
+    this._lastHeight = height
+  }
+
+  _constrainGrid(width, height) {
     // Calculate the max area allowed for the grid
     if (this.isLandscape()) {
       // Constrain to the max necessary width based on height and aspect ratio
@@ -170,8 +177,6 @@ export class PuzzleView extends Base.View {
       this.$gridAndPrompt.css({maxWidth: '', maxHeight: maxHeight})
     }
     this.presenter.resizeGrid()
-    this._lastWidth = width
-    this._lastHeight = height
   }
 }
 
