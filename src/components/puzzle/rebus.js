@@ -19,7 +19,8 @@ export class RebusView extends Base.View {
   }
 
   submitForm() {
-    this.presenter.onFormSubmit(this.getText())
+    // Prevent double-submit
+    if (this.isShown()) this.presenter.onFormSubmit(this.getText())
     return false
   }
 
