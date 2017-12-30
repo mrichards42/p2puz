@@ -62,7 +62,7 @@ class ElementContainer {
    * @returns this
    */
   toggle(state) {
-    if (state == null) state = this.$el.css('display') === 'none'
+    if (state == null) state = !this.isShown()
     // Don't just $el.toggle() in case show or hide is overridden
     if (state) {
       return this.show()
@@ -71,6 +71,10 @@ class ElementContainer {
     }
   }
 
+  /** Is this element shown? */
+  isShown() {
+    return this.$el.css('display') !== 'none'
+  }
 }
 
 /**
