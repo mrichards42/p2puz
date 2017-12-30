@@ -14,3 +14,4 @@ $remote-word-color: #ddd;
 $toolbar-border-color: #aaa;
 $toolbar-shadow-color: lighten($toolbar-border-color, 10%);
 $toolbar-highlight-color: $primary-color;
+$toolbar-hover-color: lighten($toolbar-highlight-color, 10%);

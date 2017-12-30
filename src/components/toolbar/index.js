@@ -90,6 +90,20 @@ class ToolbarPresenter extends Base.Presenter {
     this.tools.push(tool)
   }
 
+  /**
+   * Toggles the toolbar-toggled class
+   * @param {(number|string|Presenter)} tool - tool to toggle
+   * @param {boolean} [state] - toggle state
+   */
+  toggleTool(tool, state) {
+    if (!(tool instanceof Base.Presenter)) tool = this.getTool(tool)
+    if (state == null) {
+      tool.$el.toggleClass('toolbar-toggled')
+    } else {
+      tool.$el.toggleClass('toolbar-toggled', state)
+    }
+  }
+
   _makeTool(opts) {
     if (opts instanceof Base.Presenter) return opts
     let tool
