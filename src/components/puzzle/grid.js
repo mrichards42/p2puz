@@ -14,6 +14,21 @@ const VALID_KEYS =
 
 const TEMPLATE = '<div class="puzzle-grid"><table /></div>'
 
+const TEXT_CLASSES = [2, 3, 'long'].map(n => 'text-' + n).join(' ')
+
+function textClass(text) {
+  switch (text.length) {
+    case 0: case 1:
+      return ''
+    case 2:
+      return 'text-2'
+    case 3:
+      return 'text-3'
+    default:
+      return 'text-long'
+  }
+}
+
 export class GridView extends Base.View {
   constructor({template = TEMPLATE, ...opts} = {}) {
     super({template, ...opts})
@@ -65,7 +80,9 @@ export class GridView extends Base.View {
     $div.parent().toggleClass('blacksquare', square.isBlack)
     $div.children('.number').text(square.number || '').show(square.number > 0)
     $div.children('.solution').text(square.solution)
+      .removeClass(TEXT_CLASSES).addClass(textClass(square.solution))
     $div.children('.user').text(square.letter)
+      .removeClass(TEXT_CLASSES).addClass(textClass(square.letter))
     $div.toggleClass('correct', square.isCorrect)
     // decorations
     if (square.shapebg) {

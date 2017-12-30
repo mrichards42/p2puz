@@ -69,12 +69,25 @@
 
     .text {
       position: absolute;
-      left: 0; right: 0; top: 0; bottom: 0;
-      margin-top: .3em;
+      left: 0; right: 0; bottom: 0;
+      max-height: 75%;
       text-align: center;
       vertical-align: middle;
       overflow: hidden;
+      word-wrap: break-word;
       z-index: 3; // Above number
+
+      // Font sizes for rebus squares
+      &-2 {
+        font-size: 75%
+      }
+      &-3 {
+        font-size: 60%;
+      }
+      &-long {
+        font-size: 50%;
+        line-height: 1;
+      }
     }
 
     .remote {
