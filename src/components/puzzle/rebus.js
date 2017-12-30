@@ -38,12 +38,35 @@ export class RebusView extends Base.View {
   }
 
   resizeInput() {
+    // Update max-width to be the body width
+    const bodyWidth = document.body.clientWidth
+    this.$el.css('max-width', bodyWidth)
+    // Set hidden text, which will change the width
     this.$span.text(this.$input.val())
+    // Attempt to center the div
+    const parent = this.$el.parent()
+    if (this.isShown() && parent.length) {
+      const width = this.$el.outerWidth()
+      let left = -(width - parent.outerWidth()) / 2
+      // Constrain within the document window
+      const parentLeft = parent.offset().left
+      if (left + parentLeft < 0) {
+        left = -parentLeft
+      } else if (left + parentLeft + width > bodyWidth) {
+        left = bodyWidth - width - parentLeft
+      }
+      this.$el.css('left', left)
+    } else {
+      // If this is not reset here, the next time we are show the div will
+      // keep the old width
+      this.$el.css('left', '')
+    }
   }
 
   show() {
     super.show()
     this.$input.focus()
+    this.resizeInput()
   }
 }
 
