@@ -133,8 +133,8 @@ class ToolbarPresenter extends Base.Presenter {
     // Attach events
     for (const evtName in opts.events || {}) {
       const handler = opts.events[evtName]
-      tool.$el.on(evtName, () => {
-        handler(this.puzzle)
+      tool.$el.on(evtName, e => {
+        handler(e, tool, this)
         return false
       })
     }
