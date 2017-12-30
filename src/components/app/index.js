@@ -46,7 +46,7 @@ const DEFAULT_CONFIG = app => ({
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
-  toolbar: ['title', 'p2p'],
+  toolbar: ['title', 'rebus', 'p2p'],
 })
 
 /**
@@ -71,6 +71,8 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     this.view.addPuzzle(this.puzzlePresenter)
     this.view.addSidebar(this.chat, 'right')
     this.chat.on('link', (...args) => this.handleChatLink(...args))
+    // Handle grid events
+    this.forwardEvents(this.puzzlePresenter.grid, 'rebus-show', 'rebus-hide')
     // Set initial config
     this._config = {}
     this.configure(_.assign({}, DEFAULT_CONFIG(this), opts))

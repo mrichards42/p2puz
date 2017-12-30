@@ -3,6 +3,8 @@ import $ from 'jquery'
 import Mousetrap from 'mousetrap'
 import settings from './settings'
 import Base from 'components/base'
+import { EventEmitterMixin } from 'util/event'
+import Rebus from './rebus'
 import './grid.scss'
 
 const VALID_KEYS =
@@ -93,6 +95,11 @@ export class GridView extends Base.View {
     }
   }
 
+  setRebusSquare(rebusView, square) {
+    rebusView.$el.detach()
+    this.$squares.eq(square.idx).append(rebusView.$el)
+  }
+
   /**
    * Resizes the grid to fit within the parent boundaries.
    * This should be called after the parent element changes size.
@@ -138,10 +145,11 @@ export class GridView extends Base.View {
   }
 }
 
+const GRID_BASE = EventEmitterMixin(Base.Presenter, 'rebus-show', 'rebus-hide')
 /**
  * Grid presenter
  */
-export default class GridPresenter extends Base.Presenter {
+export default class GridPresenter extends GRID_BASE {
   constructor({view = new GridView(), config = {}, ...opts} = {}) {
     super({view, ...opts})
     this.puzzle = null
@@ -162,6 +170,8 @@ export default class GridPresenter extends Base.Presenter {
       this.view.renderCursor(square)
       const wordSquares = this.puzzle.findSquaresInWord(square, orientation)
       this.view.renderWordHighlight(wordSquares)
+      // Cursor movement counts as rebus dismissal
+      this.toggleRebus(false)
     })
   }
 
@@ -192,6 +202,7 @@ export default class GridPresenter extends Base.Presenter {
     mt.bind('shift+tab',   () => this.moveOneClue('prev'))
     mt.bind('home', () => this.moveCursor(this.puzzle.findWordStart('current')))
     mt.bind('end',  () => this.moveCursor(this.puzzle.findWordEnd('current')))
+    mt.bind('ins',  () => this.toggleRebus())
 
     // Letter entry
     const keys = VALID_KEYS.split('').concat(VALID_KEYS.toLowerCase().split(''))
@@ -207,6 +218,32 @@ export default class GridPresenter extends Base.Presenter {
           return this.enterLetter('', 'next')
       }
     })
+  }
+
+  /** Toggle the rebus entry */
+  toggleRebus(state) {
+    if (state == null) state = !(this._rebus && this._rebus.isShown())
+    if (!state && !this._rebus) return // can short-circuit this case
+    let rebus = this._rebus
+    if (!rebus) {
+      // Create the rebus presenter
+      rebus = this._rebus = new Rebus()
+      rebus.on('submit', letter => {
+        this.enterLetter(letter, 'next')
+        this.toggleRebus(false)
+      })
+    }
+    if (state) {
+      // Set the current square and show
+      const square = this.puzzle.currentSquare
+      rebus.setSquare(square)
+      this.view.setRebusSquare(rebus.view, square)
+      rebus.show()
+      this.emit('rebus-show', square)
+    } else {
+      rebus.hide()
+      this.emit('rebus-hide', this.puzzle.currentSquare)
+    }
   }
 
   // Cursor movement functions

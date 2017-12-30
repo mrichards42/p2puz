@@ -297,6 +297,14 @@ class PuzzlePresenter extends Base.Presenter {
   }
 
   /**
+   * Shows or hides the rebus entry view.
+   * @param {boolean} [state]
+   */
+  toggleRebus(state) {
+    this.grid.toggleRebus(state)
+  }
+
+  /**
    * Sets the clue layout.
    * @param {('horizontal'|'vertical'|'tiny')} layout
    */

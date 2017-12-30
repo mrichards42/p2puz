@@ -45,6 +45,38 @@ function title(app, toolbar) {
   }
 }
 
+/** The rebus toolbar item. */
+function rebus(app, toolbar) {
+  function toggle(tool, state) {
+    // The rebus is submitted on input blur, so if the user clicks the toolbar
+    // button to dismiss the rebus, the following happens:
+    // (1) the input is blurred, submitting the rebus
+    // (2) the rebus input is hidden, toggling the state of the button
+    // (3) the button is clicked, showing the rebus input again
+    // In order to prevent (3) from happening, we ignore clicks for a short
+    // time after the rebus input is toggled
+    if (!tool._preventClick) toolbar.toggleTool(tool, state)
+    tool._preventClick = true
+    setTimeout(() => { tool._preventClick = false }, 100)
+  }
+
+  return {
+    label: 'rebus',
+    events: {
+      click: (e, tool, toolbar) => {
+        if (!tool._preventClick) {
+          app.puzzlePresenter.toggleRebus()
+          toggle(tool)
+        }
+      },
+    },
+    setup: (tool, toolbar) => {
+      app.on('rebus-show', () => toggle(tool, true))
+      app.on('rebus-hide', () => toggle(tool, false))
+    },
+  }
+}
+
 /** The p2p toolbar item. */
 function p2p(app, toolbar) {
   return {
@@ -55,5 +87,5 @@ function p2p(app, toolbar) {
   }
 }
 
-const DEFAULT_TOOLS = {title, p2p}
+const DEFAULT_TOOLS = {title, rebus, p2p}
 export default DEFAULT_TOOLS
