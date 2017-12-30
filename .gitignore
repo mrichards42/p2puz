@@ -10,3 +10,4 @@ jsdoc_out
 
 # Editors
 .vscode
+jsconfig.json
