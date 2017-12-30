@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import strftime from 'util/strftime'
 import { EventEmitterMixin } from 'util/event'
 import Puzzle from 'models/puzzle'
 import Base from 'components/base'
@@ -7,6 +6,7 @@ import PuzzlePresenter from 'components/puzzle'
 import Toolbar from 'components/toolbar'
 import Chat from 'components/chat'
 import PuzzlePeer from './peer'
+import { makeTool } from './tools'
 import './index.scss'
 
 const TEMPLATE = `
@@ -41,35 +41,12 @@ export class AppView extends Base.View {
 
 // Presenter config
 
-const TITLE_FORMAT = ({title, date, author, editor, copyright}) => {
-  // Normalize title
-  if (!title && date) title = strftime(date, '<b>DDDD</b>, MMMM D, YYYY')
-  // Normalize author and editor
-  if (!editor) [, author, editor] = author.match(/(.*)\/(.*)/) || ['', author]
-  if (author) author = 'By ' + author.replace(/^\s*by\s+/i, '')
-  if (editor) editor = 'Edited by ' + editor.replace(/^\s*\w*\s*by\s+/i, '')
-  author = author && editor ? author + ' \u25AA ' + editor : author || editor
-  // Normalize copyright
-  if (copyright && !/\u00A9/.test(copyright)) {
-    copyright = '\u00A9 ' + copyright.replace(/^\s*\(c\)\s*/i, '')
-  }
-  // Template
-  return `
-    <span class="meta-title">${title || ''}</span>
-    <span class="meta-author">${author || ''}</span>
-    <span class="meta-copyright">${copyright || ''}</span>
-  `
-}
-
 const DEFAULT_CONFIG = app => ({
   responsive: true,
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
-  toolbar: [
-    {html: TITLE_FORMAT, class: 'toolbar-puzzle-title'},
-    {label: 'p2p', events: {click: () => app.toggleSidebar(app.chat)}},
-  ],
+  toolbar: ['title', 'p2p'],
 })
 
 /**
@@ -151,14 +128,21 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
 
   /**
    * Sets the toolbar config
-   * @param {object[]} tools - array of tool definitions
+   * @param {(object|function|string)[]} tools - array of tool definitions
    * @param {string} tools[].label - menu label
    * @param {string} [tools[].html] - item html override (default: label)
    * @param {object} [tools[].events] - event mapping
    * @param {array} [tools[].items] - sub items
+   *
+   * @example
+   * app.setTools([
+   *   {...},            // full tool definition
+   *   (app) => ({...}), // function taking app and returning a definition
+   *   'title',          // tool defined in app/tools.js
+   * ])
    */
   setTools(tools) {
-    this.toolbar.setTools(tools)
+    this.toolbar.setTools(tools.map(t => makeTool(this, this.toolbar, t)))
   }
 
   /**
@@ -206,6 +190,7 @@ class AppPresenter extends EventEmitterMixin(Base.Presenter, 'puzzle') {
     }
   }
 
+  // Toolbar handlers
   toggleSidebar(view, state) {
     view.toggle(state)
     this.puzzlePresenter.layout()
