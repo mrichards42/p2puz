@@ -43,6 +43,18 @@ class EventEmitter {
   }
 
   /**
+   * Forwards events from another event emitter
+   * @param {EventEmitter} other - other emitter
+   * @param {(string|RegExp)[]} eventTypes - event types to forward
+   */
+  forwardEvents(other, ...eventTypes) {
+    for (const eventType of eventTypes) {
+      this.registerEventType(eventType)
+      other.on(eventType, (...args) => this.emit(eventType, ...args))
+    }
+  }
+
+  /**
    * Is this a valid event type?
    * @param {string} eventType
    * @see EventEmitter.registerEventType
