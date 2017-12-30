@@ -54,6 +54,7 @@ class ToolbarPresenter extends Base.Presenter {
    * @param {string} tool.label - menu label (or tooltip if html is set)
    * @param {string} [tool.html] - item html override (default: label)
    * @param {object} [tool.events] - event mapping
+   * @param {function} [tool.setup] - called with (tool, toolbar)
    * @param {(object[]|Presenter[])} [tool.items] - sub items
    *
    * @example
@@ -137,6 +138,8 @@ class ToolbarPresenter extends Base.Presenter {
         return false
       })
     }
+    // Additional setup
+    if (opts.setup) opts.setup(tool, this)
     return tool
   }
 }
