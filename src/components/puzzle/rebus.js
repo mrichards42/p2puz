@@ -7,6 +7,7 @@ const REBUS_TEMPLATE = `
     <form method="">
       <input type="text" />
     </form>
+    <span class="rebus-hidden-text" />
   </div>
 `
 
@@ -16,6 +17,9 @@ export class RebusView extends Base.View {
     this.$input = this.$('input')
     this.$('form').on('submit', e => this.submitForm())
     this.$input.on('blur', e => this.submitForm())
+    this.$input.on('input', e => this.resizeInput())
+    // This hidden text item controls the width of the rebus input
+    this.$span = this.$('.rebus-hidden-text')
   }
 
   submitForm() {
@@ -30,6 +34,11 @@ export class RebusView extends Base.View {
 
   renderSquare(square) {
     this.$input.val(square.letter)
+    this.resizeInput()
+  }
+
+  resizeInput() {
+    this.$span.text(this.$input.val())
   }
 
   show() {
