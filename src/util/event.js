@@ -66,12 +66,15 @@ class EventEmitter {
 
   /**
    * Adds an event callback.
-   * @param {string} eventType - event type
+   * @param {(string|RegExp)} eventType - event type
    * @param {function} callback - callback for this event
    * @throws Throws an error if the event type is invalid
    */
   on(eventType, callback) {
-    if (this._callbacks[eventType]) {
+    if (eventType instanceof RegExp) {
+      if (!this._regexCallbacks) this._regexCallbacks = []
+      this._regexCallbacks.push([eventType, callback])
+    } else if (this._callbacks[eventType]) {
       this._callbacks[eventType].push(callback)
     } else if (this._eventRegex && this._eventRegex.test(eventType)) {
       this._callbacks[eventType] = [callback]
@@ -87,7 +90,7 @@ class EventEmitter {
    * @see EventEmitter#on
    */
   emit(eventType, ...args) {
-    const callbacks = this._callbacks[eventType]
+    const callbacks = this._callbacksFor(eventType)
     if (!callbacks) {
       if (this.isValidEvent(eventType)) {
         return // valid event but no events are registered
@@ -99,6 +102,19 @@ class EventEmitter {
       // setTimeout here insulates this function from errors in the callback
       setTimeout(callback.bind(this, ...args), 0)
     }
+  }
+
+  _callbacksFor(eventType) {
+    const callbacks = this._callbacks[eventType]
+    // Add regex callbacks
+    if (this._regexCallbacks) {
+      const regexCallbacks = []
+      for (const [regex, callback] of this._regexCallbacks) {
+        if (regex.test(eventType)) regexCallbacks.push(callback)
+      }
+      if (regexCallbacks) return (callbacks || []).concat(regexCallbacks)
+    }
+    return callbacks
   }
 }
 
