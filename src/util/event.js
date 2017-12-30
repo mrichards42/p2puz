@@ -92,6 +92,9 @@ class EventEmitter {
 
 export default EventEmitter
 
+const EMITTER_FUNCTIONS = Object.getOwnPropertyNames(EventEmitter.prototype)
+  .filter(n => !/^(constructor|_)/.test(n))
+
 /**
  * {@link EventEmitter} as a mixin.
  * @mixin
@@ -112,7 +115,7 @@ export const EventEmitterMixin = (Base, ...eventTypes) => class extends Base {
     } else {
       // Otherwise, create a new emitter and delegate its functions
       this._eventEmitter = new EventEmitter(...eventTypes)
-      ;['on', 'emit', 'isValidEvent', 'registerEventType'].forEach(func => {
+      EMITTER_FUNCTIONS.forEach(func => {
         this[func] = (...args) => this._eventEmitter[func](...args)
       })
     }
