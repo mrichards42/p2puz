@@ -30,7 +30,7 @@ export class PuzzleView extends Base.View {
     this._gridAspect = 1
     // Setup resizing
     this.handleResize = _.throttle(this.handleResize.bind(this), 10)
-    $(window).resize(this.handleResize)
+    $(window).resize(() => this.handleResize())
     $(this.handleResize) // Defer initial resize until after first layout
   }
 
@@ -142,13 +142,14 @@ export class PuzzleView extends Base.View {
     return this
   }
 
-  handleResize() {
+  handleResize(force = false) {
     const width = this.$el.width()
     const height = this.$el.height()
-    const canSkip = width === 0 || height === 0 ||
-      (this._lastWidth === width && this._lastHeight === height)
+    // Layout without width and height will produce crazy sizing
+    if (width === 0 || height === 0) return
     const isFirstLayout = !this._lastWidth || !this._lastHeight
-    if (canSkip) return
+    const canSkip = this._lastWidth === width && this._lastHeight === height
+    if (canSkip && force !== true) return
     // Send responsive resize to presenter
     if (this.isResponsive()) {
       // If this is the first layout we need to constrain the grid so that
@@ -238,8 +239,8 @@ class PuzzlePresenter extends Base.Presenter {
   /**
    * Forces a re-layout.
    */
-  layout() {
-    this.view.handleResize()
+  layout(force = true) {
+    this.view.handleResize(force)
   }
 
   /**
