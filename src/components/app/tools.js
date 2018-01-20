@@ -78,6 +78,21 @@ function rebus(app, toolbar) {
   }
 }
 
+/** The check toolbar item. */
+function check(app, toolbar) {
+  return {
+    label: 'check',
+    events: {
+      click: (e, tool, toolbar) => {
+        // Using auto-check here is quick and dirty.  This really needs to be a
+        // check square/word/grid drop-down that is persistent.
+        app.puzzlePresenter.toggleAutoCheck()
+        toolbar.toggleTool(tool)
+      },
+    },
+  }
+}
+
 /** The p2p toolbar item. */
 function p2p(app, toolbar) {
   return {
@@ -100,5 +115,5 @@ function open(app, toolbar) {
   return file
 }
 
-const DEFAULT_TOOLS = {title, rebus, p2p, open}
+const DEFAULT_TOOLS = {title, rebus, p2p, open, check}
 export default DEFAULT_TOOLS

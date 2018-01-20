@@ -374,6 +374,13 @@ class PuzzlePresenter extends Base.Presenter {
     this.grid.setRemoteState(state)
   }
 
+  // Check/reveal
+  toggleAutoCheck(state) {
+    // This is very easy and gets the job done temporarily, but what we
+    // actually need is for 'checked status' to be part of the grid state.
+    this.grid.$el.toggleClass('check')
+  }
+
   // Additional UI
   _setupClues() {
     // Clear
