@@ -1,4 +1,5 @@
 import strftime from 'util/strftime'
+import FilePresenter from 'components/file'
 
 /**
  * Builds a tool definition from a string, function, or object.
@@ -87,5 +88,17 @@ function p2p(app, toolbar) {
   }
 }
 
-const DEFAULT_TOOLS = {title, rebus, p2p}
+/** The open file toolbar item. */
+function open(app, toolbar) {
+  const file = new FilePresenter({label: 'open', accept: '.puz'})
+  file.$el.addClass('toolbar-tool')
+  file.on('file', (name, data) => {
+    const [type] = name.match(/[^.]+$/) || ['']
+    console.log('got file!', type, name, data)
+    app.loadPuzzle({type, data})
+  })
+  return file
+}
+
+const DEFAULT_TOOLS = {title, rebus, p2p, open}
 export default DEFAULT_TOOLS
