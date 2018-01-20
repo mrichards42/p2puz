@@ -62,7 +62,7 @@ export class GridView extends Base.View {
       ${_.range(rows).map(row => `
         <tr> ${_.range(cols).map(col => `
           <td>
-            <div class="square" data-idx=${row * rows + col}>
+            <div class="square" data-idx=${cols * row + col}>
               <div class="solution text" />
               <div class="user text" />
               <div class="number" />

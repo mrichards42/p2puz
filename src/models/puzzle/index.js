@@ -145,7 +145,7 @@ class Puzzle extends EventEmitter {
   getSquare(row, col) {
     // Check bounds
     if (row < 0 || col < 0 || row > this.lastRow || col > this.lastCol) return
-    return this.squares[this.rows * row + col]
+    return this.squares[this.cols * row + col]
   }
 
   /**
@@ -227,7 +227,7 @@ class Puzzle extends EventEmitter {
   _initGrid() {
     for (let row = 0; row < this.rows; ++row) {
       for (let col = 0; col < this.cols; ++col) {
-        const idx = row * this.rows + col
+        const idx = this.cols * row + col
         this.squares.push(new Square(this, row, col, idx, '', 0))
       }
     }
