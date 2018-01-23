@@ -17,12 +17,20 @@ class Source {
    * @param {number} [year]
    * @param {number} [month]
    * @param {number} [day]
-   * @returns {(string|null)} puzzle url (null if no puzzle for this day)
+   * @returns {Promise} puzzle url (or rejected if no puzzle for this day)
    */
   getUrl(year, month, day) {
     let date = year ? new Date(+year, +month - 1, +day) : this.mostRecent()
-    if (!this.days[date.getDay()]) return
+    if (!this.days[date.getDay()]) {
+      return Promise.reject(
+        new Error(`No puzzle for date: ${year}-${month}-${day}`))
+    }
     if (this.fixDate) date = this.fixDate(date)
+    return Promise.resolve(this.formatUrl(date))
+  }
+
+  /** Formats the url given a puzzle date */
+  formatUrl(date) {
     return this.url.replace(/\{\{([^}]+)\}\}/, (_, fmt) => strftime(date, fmt))
   }
 

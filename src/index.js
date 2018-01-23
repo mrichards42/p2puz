@@ -34,12 +34,9 @@ function main() {
 
   function loadPuzzleFromSource(source, year, month, day) {
     const src = getSource(source)
-    const url = src.getUrl(year, month, day)
-    if (url) {
+    return src.getUrl(year, month, day).then(url => {
       loadPuzzle({type: src.type, url: url})
-    } else {
-      throw new Error(`No puzzle for date: ${year}-${month}-${day}`)
-    }
+    })
   }
 
   // Router
