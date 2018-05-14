@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "node"
+script: npm run build
+
+# Automatically deploy to gh-pages
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: dist
+  on:
+    branch: master
