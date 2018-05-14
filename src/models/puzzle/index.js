@@ -139,7 +139,7 @@ class Puzzle extends EventEmitter {
   }
 
   get lastRow() {
-    return this.cols - 1
+    return this.row - 1
   }
 
   getSquare(row, col) {
