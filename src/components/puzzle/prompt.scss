@@ -21,3 +21,7 @@
   min-width: 2em;
   margin-right: 0.5em;
 }
+
+.downs-only .clue-prompt.clue-across .clue-text {
+  display: none;
+}

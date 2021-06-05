@@ -46,7 +46,7 @@ const DEFAULT_CONFIG = app => ({
   prompt: true,
   clues: 'vertical',
   orientation: 'landscape',
-  toolbar: ['title', 'open', 'check', 'rebus', 'p2p'],
+  toolbar: ['title', 'open', 'check', 'rebus', 'downs_only', 'p2p'],
 })
 
 /**

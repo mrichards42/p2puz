@@ -93,6 +93,19 @@ function check(app, toolbar) {
   }
 }
 
+/** The downs_only toolbar item. */
+function downs_only(app, toolbar) {
+  return {
+    label: 'downs only',
+    events: {
+      click: (e, tool, toolbar) => {
+        app.puzzlePresenter.toggleDownsOnly()
+        toolbar.toggleTool(tool)
+      },
+    },
+  }
+}
+
 /** The p2p toolbar item. */
 function p2p(app, toolbar) {
   return {
@@ -115,5 +128,5 @@ function open(app, toolbar) {
   return file
 }
 
-const DEFAULT_TOOLS = {title, rebus, p2p, open, check}
+const DEFAULT_TOOLS = {title, rebus, p2p, open, check, downs_only}
 export default DEFAULT_TOOLS

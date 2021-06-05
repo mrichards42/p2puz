@@ -105,3 +105,8 @@
     margin: 0;
   }
 }
+
+// Downs only
+.downs-only .clue-list-wrapper.clue-across {
+  display: none;
+}

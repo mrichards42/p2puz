@@ -382,6 +382,10 @@ class PuzzlePresenter extends Base.Presenter {
     this.grid.$el.toggleClass('check')
   }
 
+  toggleDownsOnly(state) {
+    this.$el.toggleClass('downs-only')
+  }
+
   // Additional UI
   _setupClues() {
     // Clear

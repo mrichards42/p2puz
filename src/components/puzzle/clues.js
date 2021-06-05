@@ -26,6 +26,7 @@ export class ClueListView extends Base.View {
   // Drawing
   renderClueList(orientation, clues) {
     this.$el.data('orientation', orientation)
+    this.setExclusiveClass('clue', orientation)
     this.$header.text(orientation)
     this.$list.empty()
     this.$list.append(clues.map(clue => `

@@ -16,6 +16,7 @@ export class PromptView extends Base.View {
   }
 
   renderClue(clue) {
+    this.setExclusiveClass('clue', clue.orientation)
     this.$number.html(clue.number + clue.orientation.slice(0, 1).toUpperCase())
     this.$text.html(clue.text)
   }
