@@ -128,6 +128,9 @@
   text-align: right;
   min-width: 2em;
   margin-right: 0.5em; }
+
+.downs-only .clue-prompt.clue-across .clue-text {
+  display: none; }
 .clue-header {
   padding: .5em;
   margin: 0;
@@ -196,6 +199,9 @@
     background: none;
     padding: 0;
     margin: 0; }
+
+.downs-only .clue-list-wrapper.clue-across {
+  display: none; }
 .metadata {
   overflow: auto;
   padding: 0.25em; }
