@@ -1,7 +1,7 @@
 /** @module util/fetch */
 
 /**
- * Fetches data using cors-anywhere
+ * Fetches data using a Netlify proxy
  * @param {string} url
  * @returns {Promise} json or plain text response
  *
@@ -10,7 +10,7 @@
  *   .then(data => console.log('got somedata', data))
  */
 export default function fetchProxy(url, opts) {
-  return fetch('https://cors-anywhere.herokuapp.com/' + url, opts).then(r => {
+  return fetch('/fetch/' + url.replace(/^https?:\/\//, ''), opts).then(r => {
     if (r.ok) {
       return r
     } else {

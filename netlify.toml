@@ -1,13 +1,13 @@
 [build]
-  publish "dist"
+  publish = "dist"
 
 [build.environment]
   # A variety of deps don't work past node 14 and I don't want to try to start
   # the build config from scratch
-  NODE_VERSION = 14
+  NODE_VERSION = "14"
 
 [[redirects]]
   from = "/fetch/*"
-  to = ":splat"
+  to = "https://:splat"
   status = 200
   force = true
