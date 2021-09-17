@@ -56,12 +56,14 @@ export class ChatView extends Base.View {
     this.$lastChat = $()
     this.$input = this.$('.chat-bar input')
     this.$send = this.$('.chat-bar button')
-    this.$send.click(() => {
+    this.$send.click((e) => {
       const message = this.getInput()
       if (/^\s*$/.test(message)) return false // prevent empty messages
       this.setInput('')
+      e.preventDefault();
       this.presenter.onSendClick(message)
       this.$input.focus()
+      return false;
     })
     this.$el.on('click', 'a.chat-clue-link', e => {
       const $a = $(e.currentTarget)
