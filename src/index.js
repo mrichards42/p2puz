@@ -79,7 +79,7 @@ function main() {
   })
 
   // Default puzzle
-  router.get('', req => router.navigate('/puzzle/jonesin/current'))
+  router.get('', req => router.navigate('/puzzle/univ/current'))
 }
 
 loadPolyfills([

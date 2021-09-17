@@ -39,4 +39,9 @@ export default {
     type: 'puz',
     days: [true, false, false, false, false, false, false],
   },
+  univ: {
+    url: 'http://herbach.dnsalias.com/uc/uc{{YYMMDD}}.puz',
+    type: 'puz',
+    days: [true, true, true, true, true, true, true],
+  },
 }
