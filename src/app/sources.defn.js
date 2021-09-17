@@ -10,7 +10,7 @@ export default {
     days: [false, true, false, false, true, false, false],
     formatUrl: function(date) {
       // Fetch the blog post for this url
-      const url = this.url + '/' + strftime(date, 'YYYY/MM/DD')
+      const url = this.url + '/' + strftime(date, 'YYYY/MM/DD') + '/'
       return fetchProxy(url).then(r => r.text()).then(text => {
         // Search for the first puz link
         const [, url] = text.match(this.puzPattern) || []
